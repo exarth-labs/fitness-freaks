@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.views.static import serve
 
 from root.settings import ENVIRONMENT, MEDIA_ROOT, STATIC_ROOT
@@ -22,7 +22,6 @@ urlpatterns += [
 
 """ INTERNAL REQUIRED APPS ----------------------------------------------------------------------------------------- """
 urlpatterns += [
-    path('', include('src.website.urls', namespace='website')),
     path('dashboard/', include('src.services.dashboard.urls', namespace='dashboard')),
     path('accounts/', include('src.services.accounts.urls', namespace='accounts')),
     path('management/', include('src.services.management.urls', namespace='management')),
@@ -42,12 +41,13 @@ urlpatterns += [
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
 
+""" HOME -> LOGIN REDIRECT ------------------------------------------------------------------------------------------ """
+urlpatterns += [
+    path('', RedirectView.as_view(url='/accounts/login/', permanent=False)),
+]
+
 """ DEVELOPMENT ONLY -------------------------------------------------------------------------------------------- """
 if ENVIRONMENT != 'server':
     urlpatterns += [
         path("__reload__/", include("django_browser_reload.urls"))
-    ]
-
-    urlpatterns += [
-        path('', TemplateView.as_view(template_name='dev/starter-page.html')),  # use: for home page/remove this
     ]

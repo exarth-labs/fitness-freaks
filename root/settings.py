@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     'src.services.accounts.apps.AccountsConfig',
     'src.services.dashboard.apps.DashboardConfig',
     'src.services.finance.apps.FinanceConfig',
-    'src.website.apps.WebsiteConfig',
     'src.services.management.apps.ManagementConfig',
 
     # mailchimp
