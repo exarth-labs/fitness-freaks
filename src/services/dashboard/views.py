@@ -147,6 +147,23 @@ def get_dashboard_statistics():
     stats['defaulters'] = defaulters_qs[:20]
     stats['defaulters_count'] = defaulters_qs.count()
 
+    # Monthly new members chart data (last 6 months)
+    monthly_new_members = Member.objects.filter(
+        join_date__gte=months_list[0]
+    ).annotate(
+        month=TruncMonth('join_date')
+    ).values('month').annotate(
+        count=Count('id')
+    ).order_by('month')
+
+    new_members_dict = {item['month'].replace(day=1): item['count'] for item in monthly_new_members}
+    stats['chart_new_members'] = [new_members_dict.get(m, 0) for m in months_list]
+
+    # Active rate percentage
+    stats['active_rate'] = round(
+        (stats['active_members'] / stats['total_members'] * 100) if stats['total_members'] > 0 else 0, 1
+    )
+
     return stats
 
 
@@ -169,6 +186,7 @@ class DashboardView(TemplateView):
         stats['chart_labels_json'] = json.dumps(stats.get('chart_labels', []))
         stats['chart_revenue_json'] = json.dumps(stats.get('chart_revenue', []))
         stats['chart_expenses_json'] = json.dumps(stats.get('chart_expenses', []))
+        stats['chart_new_members_json'] = json.dumps(stats.get('chart_new_members', []))
 
         context.update(stats)
         return context
