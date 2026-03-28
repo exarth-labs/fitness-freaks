@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    GymShiftListView, GymShiftCreateView, GymShiftUpdateView, GymShiftDeleteView,
     SubscriptionPlanListView, SubscriptionPlanCreateView, SubscriptionPlanUpdateView, SubscriptionPlanDeleteView,
     MemberListView, MemberDetailView, MemberCreateView, MemberUpdateView, MemberDeleteView,
     PaymentListView, PaymentDetailView, PaymentCreateView, PaymentUpdateView, PaymentDeleteView,
@@ -9,6 +10,12 @@ from .views import (
 
 app_name = 'finance'
 urlpatterns = [
+    # Gym Shifts
+    path('shifts/', GymShiftListView.as_view(), name='gymshift_list'),
+    path('shifts/create/', GymShiftCreateView.as_view(), name='gymshift_create'),
+    path('shifts/update/<int:pk>/', GymShiftUpdateView.as_view(), name='gymshift_update'),
+    path('shifts/delete/<int:pk>/', GymShiftDeleteView.as_view(), name='gymshift_delete'),
+
     # Subscription Plans
     path('plans/', SubscriptionPlanListView.as_view(), name='subscriptionplan_list'),
     path('plans/create/', SubscriptionPlanCreateView.as_view(), name='subscriptionplan_create'),

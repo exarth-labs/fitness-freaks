@@ -39,6 +39,40 @@ class ExpenseCategory(models.TextChoices):
     OTHER = 'other', 'Other'
 
 
+class GenderChoice(models.TextChoices):
+    MALE = 'male', 'Male'
+    FEMALE = 'female', 'Female'
+    BOTH = 'both', 'Both'
+
+
+""" GYM SHIFT """
+
+
+class GymShift(models.Model):
+    name = models.CharField(max_length=100, help_text='e.g. Morning Men, Women, Evening Men')
+    gender = models.CharField(max_length=10, choices=GenderChoice.choices, default=GenderChoice.BOTH)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    is_active = models.BooleanField(default=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    allowed_actions = ['delete', 'update']
+
+    class Meta:
+        ordering = ['start_time']
+        verbose_name = 'Gym Shift'
+        verbose_name_plural = 'Gym Shifts'
+
+    def __str__(self):
+        return f"{self.name} ({self.get_gender_display()}) {self.start_time.strftime('%I:%M %p')} - {self.end_time.strftime('%I:%M %p')}"
+
+    def get_display_fields(self):
+        return ['name', 'gender', 'start_time', 'end_time', 'is_active']
+
+    def get_action_urls(self, user):
+        return get_action_urls(self, user, True)
+
+
 """ SUBSCRIPTION PLAN """
 
 
@@ -91,6 +125,20 @@ class Member(models.Model):
     subscription_plan = models.ForeignKey(
         SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True, related_name='members'
     )
+
+    # Gender & Shift
+    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')], default='male')
+    shift = models.ForeignKey(
+        GymShift, on_delete=models.SET_NULL, null=True, blank=True, related_name='members',
+        help_text='Assigned gym timing slot'
+    )
+    instructor = models.ForeignKey(
+        'accounts.Instructor', on_delete=models.SET_NULL, null=True, blank=True, related_name='members',
+        help_text='Assigned instructor (optional)'
+    )
+
+    # Contact
+    phone_number = models.CharField(max_length=15, blank=True, null=True, help_text="Member's direct contact number")
 
     # Pakistan-specific fields
     cnic = models.CharField(
@@ -148,7 +196,7 @@ class Member(models.Model):
         return f"{self.user.get_full_name() or self.user.email}"
 
     def get_display_fields(self):
-        return ['user', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
+        return ['user', 'gender', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
 
     def get_action_urls(self, user):
         return get_action_urls(self, user, True)

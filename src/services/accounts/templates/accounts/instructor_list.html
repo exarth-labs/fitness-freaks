@@ -1,0 +1,67 @@
+{% extends 'include/base/base_list.html' %}
+
+{% block toolbar_actions %}
+    {% if request.user.is_staff %}
+        <a href="{% url 'accounts:instructor_create' %}" class="btn fw-bold btn-primary shadow-sm">
+            <i class="bx bx-plus"></i> Add Instructor
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block sub_content %}
+    {% if object_list %}
+        <thead class="table-light">
+        <tr>
+            <th class="text-nowrap">#</th>
+            <th class="text-nowrap"><i class="bx bx-user me-1"></i>Name</th>
+            <th class="text-nowrap"><i class="bx bx-envelope me-1"></i>Email</th>
+            <th class="text-nowrap"><i class="bx bx-dumbbell me-1"></i>Specialization</th>
+            <th class="text-nowrap"><i class="bx bx-calendar me-1"></i>Hired</th>
+            <th class="text-nowrap text-center"><i class="bx bx-check-circle me-1"></i>Status</th>
+            <th class="text-nowrap text-center"><i class="bx bx-cog me-1"></i>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for obj in object_list %}
+            <tr>
+                <td class="fw-bold text-muted">#{{ obj.id }}</td>
+                <td>
+                    <div class="fw-semibold">{{ obj.user.get_full_name|default:obj.user.email }}</div>
+                    <small class="text-muted">{{ obj.user.email }}</small>
+                </td>
+                <td>
+                    <a href="mailto:{{ obj.user.email }}" class="text-decoration-none">{{ obj.user.email }}</a>
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border">{{ obj.specialization }}</span>
+                </td>
+                <td>{{ obj.hire_date|date:"M d, Y"|default:"—" }}</td>
+                <td class="text-center">
+                    {% if obj.is_active %}
+                        <span class="badge bg-success-subtle text-success"><i class="bx bx-check-circle me-1"></i>Active</span>
+                    {% else %}
+                        <span class="badge bg-danger-subtle text-danger"><i class="bx bx-x-circle me-1"></i>Inactive</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{% url 'accounts:instructor_detail' obj.pk %}" class="btn btn-light" title="View">
+                            <i class="bx bx-show"></i>
+                        </a>
+                        {% if request.user.is_staff %}
+                            <a href="{% url 'accounts:instructor_update' obj.pk %}" class="btn btn-soft-primary" title="Edit">
+                                <i class="bx bx-edit"></i>
+                            </a>
+                            <a href="{% url 'accounts:instructor_delete' obj.pk %}" class="btn btn-soft-danger" title="Delete">
+                                <i class="bx bx-trash"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    {% else %}
+        {% include 'include/globals/data-not-found.html' %}
+    {% endif %}
+{% endblock %}

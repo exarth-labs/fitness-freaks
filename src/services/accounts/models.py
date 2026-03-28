@@ -53,3 +53,35 @@ class User(AbstractUser):
             self.user_type = UserType.administration
 
         super().save(*args, **kwargs)
+
+
+""" INSTRUCTOR """
+
+
+class Instructor(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='instructor_profile'
+    )
+    specialization = models.CharField(
+        max_length=100, help_text='e.g. Cardio, Weight Training, Boxing, Yoga'
+    )
+    hire_date = models.DateField(default=None, null=True, blank=True)
+    bio = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    allowed_actions = ['delete', 'update', 'detail']
+
+    class Meta:
+        ordering = ['-created_on']
+        verbose_name = 'Instructor'
+        verbose_name_plural = 'Instructors'
+
+    def __str__(self):
+        return f"{self.user.get_full_name() or self.user.email} — {self.specialization}"
+
+    def get_display_fields(self):
+        return ['user', 'specialization', 'hire_date', 'is_active']
+
+    def get_action_urls(self, user):
+        return get_action_urls(self, user, True)

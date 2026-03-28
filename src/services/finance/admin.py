@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import SubscriptionPlan, Member, Payment, Expense
+from .models import GymShift, SubscriptionPlan, Member, Payment, Expense
+
+
+@admin.register(GymShift)
+class GymShiftAdmin(admin.ModelAdmin):
+    list_display = ['name', 'gender', 'start_time', 'end_time', 'is_active']
+    list_filter = ['gender', 'is_active']
+    ordering = ['start_time']
 
 
 @admin.register(SubscriptionPlan)
@@ -12,10 +19,10 @@ class SubscriptionPlanAdmin(admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ['user', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
-    list_filter = ['status', 'is_active', 'subscription_plan', 'blood_group']
-    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'cnic']
-    raw_id_fields = ['user', 'subscription_plan']
+    list_display = ['user', 'gender', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
+    list_filter = ['status', 'gender', 'shift', 'is_active', 'subscription_plan', 'blood_group']
+    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'cnic', 'phone_number']
+    raw_id_fields = ['user', 'subscription_plan', 'shift', 'instructor']
     date_hierarchy = 'join_date'
     ordering = ['-created_on']
 

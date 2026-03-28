@@ -5,10 +5,33 @@ from django.views.generic import DetailView
 from datetime import timedelta
 
 from .filters import SubscriptionPlanFilter, MemberFilter, PaymentFilter, ExpenseFilter
-from .forms import SubscriptionPlanForm, MemberForm, PaymentForm, ExpenseForm, RenewSubscriptionForm
+from .forms import SubscriptionPlanForm, GymShiftForm, MemberForm, PaymentForm, ExpenseForm, RenewSubscriptionForm
 from .mixins import FinanceListViewMixin, FinanceDetailViewMixin, FinanceDeleteViewMixin
-from .models import SubscriptionPlan, Member, Payment, Expense, SubscriptionStatus, PaymentStatus
+from .models import SubscriptionPlan, GymShift, Member, Payment, Expense, SubscriptionStatus, PaymentStatus
 from src.core.views import AjaxCRUDView
+
+
+""" GYM SHIFT VIEWS """
+
+
+class GymShiftListView(FinanceListViewMixin):
+    model = GymShift
+    filter_class = None
+
+
+class GymShiftCreateView(AjaxCRUDView):
+    model = GymShift
+    form_class = GymShiftForm
+
+
+class GymShiftUpdateView(AjaxCRUDView):
+    model = GymShift
+    form_class = GymShiftForm
+
+
+class GymShiftDeleteView(FinanceDeleteViewMixin):
+    model = GymShift
+    redirect_url = 'finance:gymshift_list'
 
 
 """ SUBSCRIPTION PLAN VIEWS """

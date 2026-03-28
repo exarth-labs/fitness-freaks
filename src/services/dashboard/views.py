@@ -138,6 +138,15 @@ def get_dashboard_statistics():
         total=Sum('amount')
     ).order_by('-total')
 
+    # Defaulters — expired members who haven't renewed (most overdue first)
+    defaulters_qs = Member.objects.filter(
+        status=SubscriptionStatus.EXPIRED,
+        is_active=True
+    ).select_related('user', 'subscription_plan', 'shift').order_by('subscription_end')
+
+    stats['defaulters'] = defaulters_qs[:20]
+    stats['defaulters_count'] = defaulters_qs.count()
+
     return stats
 
 

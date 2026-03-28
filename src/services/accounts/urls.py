@@ -3,6 +3,7 @@ from .views import (
     UserListView, UserDetailView, UserUpdateView, UserDeleteView, UserCreateView, UserPasswordResetView,
     LogoutView, CrossAuthView, UserUpdateFullView, UserPasswordChangeView, UserGroupPermissionCreateView,
     UserGroupPermissionUpdateView, UserGroupPermissionDeleteView, UserPermissionUpdate,
+    InstructorListView, InstructorDetailView, InstructorCreateView, InstructorUpdateView, InstructorDeleteView,
 )
 
 app_name = 'accounts'
@@ -30,5 +31,13 @@ urlpatterns += [
     path('permission/<int:pk>/delete/<int:user_id>/', UserGroupPermissionDeleteView.as_view(),
          name='permission_delete'),
     path('user/<int:pk>/permission/update/', UserPermissionUpdate.as_view(), name='user_permission_update'),
+]
+
+urlpatterns += [
+    path('instructors/', InstructorListView.as_view(), name='instructor_list'),
+    path('instructors/create/', InstructorCreateView.as_view(), name='instructor_create'),
+    path('instructors/<int:pk>/', InstructorDetailView.as_view(), name='instructor_detail'),
+    path('instructors/<int:pk>/update/', InstructorUpdateView.as_view(), name='instructor_update'),
+    path('instructors/<int:pk>/delete/', InstructorDeleteView.as_view(), name='instructor_delete'),
 ]
 

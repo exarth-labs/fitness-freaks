@@ -53,6 +53,7 @@
 
             <!-- Filters & Table -->
             <div class="card shadow-sm mb-4">
+                {% if filter_form %}
                 <div class="card-header bg-light py-3">
                     <form method="get" id="search-form" class="mb-0">
                         <div class="row g-2 align-items-center">
@@ -74,6 +75,7 @@
                         </div>
                     </form>
                 </div>
+                {% endif %}
 
                 <!-- Table -->
                 <div class="card-body">
@@ -190,22 +192,21 @@
                     <!-- End Modals Container -->
 
                     <!-- Pagination -->
+                    {% if is_paginated %}
                     <div class="row mt-4">
                         <div class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start">
                             <div class="text-muted small">
-                                {% if object_list.paginator %}
-                                    Showing {{ object_list.start_index }} to {{ object_list.end_index }}
-                                    of {{ object_list.paginator.count }} entries
-                                {% endif %}
+                                Showing {{ page_obj.start_index }} to {{ page_obj.end_index }}
+                                of {{ paginator.count }} entries
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
                             <nav aria-label="pagination">
                                 <ul class="pagination mb-0">
-                                    {% if object_list.has_previous %}
+                                    {% if page_obj.has_previous %}
                                         <li class="page-item">
                                             <a class="page-link"
-                                               href="{% relative_url object_list.previous_page_number 'page' request.GET.urlencode %}"
+                                               href="{% relative_url page_obj.previous_page_number 'page' request.GET.urlencode %}"
                                                aria-label="Previous">
                                                 <i class="bx bx-chevron-left"></i>
                                             </a>
@@ -215,19 +216,17 @@
                                             <span class="page-link"><i class="bx bx-chevron-left"></i></span>
                                         </li>
                                     {% endif %}
-                                    
+
                                     <li class="page-item active mx-1">
                                         <span class="page-link">
-                                            {% if object_list.paginator %}
-                                                {{ object_list.number }} / {{ object_list.paginator.num_pages }}
-                                            {% endif %}
+                                            {{ page_obj.number }} / {{ paginator.num_pages }}
                                         </span>
                                     </li>
-                                    
-                                    {% if object_list.has_next %}
+
+                                    {% if page_obj.has_next %}
                                         <li class="page-item">
                                             <a class="page-link"
-                                               href="{% relative_url object_list.next_page_number 'page' request.GET.urlencode %}"
+                                               href="{% relative_url page_obj.next_page_number 'page' request.GET.urlencode %}"
                                                aria-label="Next">
                                                 <i class="bx bx-chevron-right"></i>
                                             </a>
@@ -241,6 +240,7 @@
                             </nav>
                         </div>
                     </div>
+                    {% endif %}
 
                 </div>
                 <!-- End card-body -->
