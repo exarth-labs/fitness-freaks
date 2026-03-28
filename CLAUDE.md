@@ -10,11 +10,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Setup
 ```bash
-# Automated setup (creates venv, installs deps, runs migrations, creates superuser)
+# Automated setup (creates .venv, installs deps, runs migrations, creates superuser)
 chmod +x docs/bash/setup.sh && ./docs/bash/setup.sh
 
 # Manual
-python -m venv venv && source venv/bin/activate
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 ```
@@ -30,7 +30,19 @@ python manage.py shell              # Django shell
 python manage.py makemigrations     # Create new migrations
 python manage.py migrate            # Apply migrations
 ./docs/bash/migrations_clean.sh     # Clean all migration files (use carefully)
-./docs/bash/faker.sh                # Seed database with fake data
+```
+
+### Seed & Clean Data
+```bash
+python manage.py adddata                          # Seed fake data (50 members, 120 payments, 60 expenses, 5 instructors)
+python manage.py adddata --members 100 --payments 200 --expenses 80 --instructors 8
+python manage.py cleandata --yes                  # Delete all data, keep first superuser
+python manage.py cleandata --yes --all            # Also wipe shifts and plans
+```
+
+### Notifications
+```bash
+python manage.py send_expiry_reminders            # Email members expiring within 7 days
 ```
 
 ### Static & Admin
@@ -48,16 +60,14 @@ Default dev login: `mark@exarth.com` / `mark` — admin at `/admin/`
 ```
 root/           # Django project config (settings, root URLs, wsgi/asgi)
 src/
-  core/         # Shared mixins, utilities, base models, template tags
+  core/         # Shared mixins, utilities, base models, template tags, management commands
   services/
-    accounts/   # Custom User model (email-based), user CRUD, permissions
-    dashboard/  # Analytics: member stats, revenue charts, expiring subs
-    finance/    # SubscriptionPlan, Member, Payment, Expense models
-    management/ # Country/State geographic models
+    accounts/   # Custom User model (email-based), Instructor model, user CRUD
+    dashboard/  # Analytics: member stats, revenue charts, expiring subs, defaulters
+    finance/    # SubscriptionPlan, GymShift, Member, Payment, Expense models
   apps/
     whisper/    # Internal notification/email system
-  website/      # Public-facing pages
-templates/      # HTML templates (base, account, socialaccount layouts)
+templates/      # HTML templates (base, account layouts)
 static/         # CSS, JS, images
 docs/bash/      # Utility shell scripts
 ```
@@ -74,17 +84,22 @@ docs/bash/      # Utility shell scripts
 
 ### Domain Models (Finance App)
 
-- `SubscriptionPlan` — gym membership tiers
-- `Member` — gym members (health info, CNIC, emergency contacts, linked User)
+- `GymShift` — gender-based timing slots (Morning Men, Women, Evening Men)
+- `SubscriptionPlan` — gym membership tiers with pricing
+- `Member` — gym members (gender, shift, instructor FK, CNIC, health info, emergency contacts, linked User)
 - `Payment` — tracks cash/JazzCash/Easypaisa/bank/card transactions; statuses: paid/pending/failed/refunded
 - `Expense` — rent/utilities/salaries/equipment/marketing categories
 
+### Domain Models (Accounts App)
+
+- `User` — email-based custom user, types: `administration` / `client`
+- `Instructor` — staff profile (specialization, hire date, bio), OneToOne → User
+
 ### Authentication
 
-- Email-based login via `django-allauth` (username login disabled)
-- Google social login enabled
-- MFA/FIDO2 support available
-- REST API auth via `dj-rest-auth` + JWT
+- Email-based login only via `django-allauth` 65.x
+- No social login, no signup (registration disabled via `ACCOUNT_SIGNUP_ENABLED = False`)
+- `allauth.account.middleware.AccountMiddleware` required in MIDDLEWARE
 - Two user types: `administration`, `client`
 
 ### Settings & Environment

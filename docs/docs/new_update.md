@@ -280,6 +280,88 @@ Removed `{% load socialaccount %}` and `{% load account socialaccount %}` from a
 
 ---
 
+## Step 8 — Security Hardening + REST Framework Removal ✅
+
+### REST Framework Removed
+`rest_framework`, `rest_framework.authtoken`, `dj_rest_auth`, `dj_rest_auth.registration`, and `drf_yasg` were confirmed unused — no serializers, no API views, no REST URL patterns anywhere in the codebase. All removed from `INSTALLED_APPS`.
+
+### Django Security Settings (production only)
+Added a production-only security block in `settings.py` under `if ENVIRONMENT == 'server':`. These settings are **inactive on local dev** — they only apply when deploying to the server.
+
+| Setting | Value | Purpose |
+|---|---|---|
+| `SECURE_SSL_REDIRECT` | `True` | Force all HTTP → HTTPS |
+| `SECURE_HSTS_SECONDS` | `31536000` (1 year) | Tell browsers to only use HTTPS |
+| `SECURE_HSTS_INCLUDE_SUBDOMAINS` | `True` | Apply HSTS to subdomains |
+| `SECURE_HSTS_PRELOAD` | `True` | Allow browser HSTS preload list |
+| `SESSION_COOKIE_SECURE` | `True` | Session cookie only sent over HTTPS |
+| `CSRF_COOKIE_SECURE` | `True` | CSRF cookie only sent over HTTPS |
+| `SECURE_CONTENT_TYPE_NOSNIFF` | `True` | Prevent MIME-type sniffing |
+| `X_FRAME_OPTIONS` | `'DENY'` | Block clickjacking via iframes |
+
+### Verification
+- `python manage.py check` (local) → 0 issues ✓
+- `python manage.py check --deploy` with `ENVIRONMENT=server` → 0 security warnings ✓
+- Only remaining warning during deploy check is if `SECRET_KEY` is weak — ensure `.env` on server has a long random key
+
+### Files Changed
+- `root/settings.py` — removed REST apps from `INSTALLED_APPS`, added security block
+
+### Checklist
+- [x] REST framework packages removed from `INSTALLED_APPS`
+- [x] No REST framework imports or usage existed anywhere in `src/`
+- [x] All 5 Django security warnings resolved for production
+- [x] Local dev unaffected (security settings gated on `ENVIRONMENT=server`)
+
+---
+
+## Step 9 — Management Commands + Docs Cleanup ✅
+
+### New Management Commands
+
+Two commands added to `src/core/management/commands/`:
+
+#### `adddata` — Seed fake development data
+```bash
+python manage.py adddata                          # defaults
+python manage.py adddata --members 100 --payments 200 --expenses 80 --instructors 8
+```
+Seeds in order: shifts (idempotent) → plans (idempotent) → instructors → members → payments → expenses → email notifications. Members are gender-aware — only assigned to matching shifts. All seeded users get password `password123`.
+
+#### `cleandata` — Wipe all data except first superuser
+```bash
+python manage.py cleandata               # keeps shifts & plans, prompts for confirmation
+python manage.py cleandata --yes         # skip prompt
+python manage.py cleandata --yes --all   # also wipe shifts and plans
+```
+Deletes in FK-safe order: notifications → payments → members → instructors → users (except first superuser).
+
+### allauth Templates — Missing Pages Added
+Two templates were missing for active allauth URLs:
+
+| Template | URL | Notes |
+|---|---|---|
+| `account/reauthenticate.html` | `/accounts/reauthenticate/` | Password re-confirm before sensitive actions |
+| `account/confirm_login_code.html` | `/accounts/login/code/confirm/` | Login-by-code flow (registered but unused by default) |
+
+Both match existing Bootstrap 5 / crispy forms project style, extend `account/base.html`.
+
+### Docs & Config Cleanup
+- `README.md` — full rewrite: removed old boilerplate content (REST, social login, company apps); added all management commands, env vars table, correct app list
+- `CLAUDE.md` — updated app layout (removed `management/`, `website/`); updated auth section; added `adddata`, `cleandata`, `send_expiry_reminders` commands; fixed venv path to `.venv`
+- `docs/bash/setup.sh` — renamed header from "EXARTH COMPANY SITE" to "FITNESS FREAKS"; `venv` → `.venv`; removed hardcoded default credentials; added `adddata` tip
+- `docs/bash/migrations.sh` — updated header; `venv` → `.venv` with fallback
+
+### Checklist
+- [x] `adddata` seeds all models including GymShift, Instructor, Member (gender-aware)
+- [x] `cleandata` deletes in FK-safe order, preserves first superuser
+- [x] All allauth URL templates present and returning correct HTTP codes
+- [x] README reflects actual project (no boilerplate references)
+- [x] CLAUDE.md reflects current architecture and commands
+- [x] Setup scripts use `.venv`
+
+---
+
 ## Summary Table
 
 | Step | Area | Type | Status |
@@ -291,3 +373,5 @@ Removed `{% load socialaccount %}` and `{% load account socialaccount %}` from a
 | 5 | Dashboard defaulters | Feature | Done |
 | 6 | Expiry email notifications | Feature | Done |
 | 7 | Django 5.2 + allauth 65.x upgrade | Compatibility | Done |
+| 8 | Security hardening + REST removal | Cleanup / Security | Done |
+| 9 | Management commands + docs cleanup | Feature / Cleanup | Done |
