@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'src.services.accounts.apps.AccountsConfig',
     'src.services.dashboard.apps.DashboardConfig',
     'src.services.finance.apps.FinanceConfig',
+    'src.services.website.apps.WebsiteConfig',
 
     # mailchimp
     'mailchimp_transactional',
@@ -71,7 +72,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
 
     # YOUR MIDDLEWARES
     "allauth.account.middleware.AccountMiddleware",

@@ -1,0 +1,681 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section id="home" class="hero-section relative min-h-screen flex items-center justify-center overflow-hidden hero-pattern">
+    <!-- Particles -->
+    <div class="particles absolute inset-0"></div>
+    
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80" 
+             alt="Gym Background" 
+             class="w-full h-full object-cover opacity-30">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark/80 via-dark/60 to-dark"></div>
+    </div>
+    
+    <!-- Hero Content -->
+    <div class="hero-content relative z-10 text-center px-4 max-w-5xl mx-auto">
+        <div class="animate-fade-in">
+            <span class="badge-primary inline-block mb-6">
+                <i class="fas fa-star mr-2"></i>#1 GYM IN PAKISTAN
+            </span>
+        </div>
+        
+        <h1 class="font-heading text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-slide-up stagger-1">
+            TRANSFORM YOUR<br>
+            <span class="gradient-text">BODY</span> & <span class="gradient-text">LIFE</span>
+        </h1>
+        
+        <p class="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto animate-slide-up stagger-2">
+            State-of-the-art equipment • Expert trainers • Flexible shifts • Premium facilities
+        </p>
+        
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up stagger-3">
+            <a href="/accounts/login/" class="btn-primary w-full sm:w-auto text-center">
+                <i class="fas fa-rocket mr-2"></i>START YOUR JOURNEY
+            </a>
+            <a href="#features" class="btn-secondary w-full sm:w-auto text-center">
+                <i class="fas fa-play-circle mr-2"></i>EXPLORE MORE
+            </a>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-white/10 animate-slide-up stagger-4">
+            <div>
+                <div class="stat-number" data-target="500">0</div>
+                <div class="text-gray-400 mt-2">HAPPY MEMBERS</div>
+            </div>
+            <div>
+                <div class="stat-number" data-target="15">0</div>
+                <div class="text-gray-400 mt-2">EXPERT TRAINERS</div>
+            </div>
+            <div>
+                <div class="stat-number" data-target="50">0</div>
+                <div class="text-gray-400 mt-2">MODERN EQUIPMENT</div>
+            </div>
+            <div>
+                <div class="stat-number" data-target="5">0</div>
+                <div class="text-gray-400 mt-2">FLEXIBLE SHIFTS</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <a href="#features" class="text-gray-400 hover:text-primary transition-colors">
+            <i class="fas fa-chevron-down text-3xl"></i>
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-24 relative grid-pattern">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-title animate-on-scroll">
+            <span class="badge-primary mb-4 inline-block">WHY CHOOSE US</span>
+            <h2 class="text-4xl md:text-5xl font-bold">PREMIUM <span class="gradient-text">FEATURES</span></h2>
+            <div class="divider-modern"></div>
+            <p class="text-gray-400 mt-4">Everything you need to achieve your fitness goals under one roof</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Feature 1 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-heart-pulse text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">CARDIO ZONE</h3>
+                <p class="text-gray-400">Premium treadmills, ellipticals, and stationary bikes with heart rate monitoring</p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-dumbbell text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">WEIGHT TRAINING</h3>
+                <p class="text-gray-400">Complete range of free weights and resistance machines for all levels</p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-users text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">EXPERT TRAINERS</h3>
+                <p class="text-gray-400">Certified instructors to guide you through your fitness journey</p>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-clock text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">FLEXIBLE SHIFTS</h3>
+                <p class="text-gray-400">Multiple shift timings from 6 AM to 10 PM to fit your schedule</p>
+            </div>
+            
+            <!-- Feature 5 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-shower text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">PREMIUM LOCKERS</h3>
+                <p class="text-gray-400">Clean changing rooms with secure lockers and hot showers</p>
+            </div>
+            
+            <!-- Feature 6 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-parking text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">FREE PARKING</h3>
+                <p class="text-gray-400">Ample parking space for members and visitors</p>
+            </div>
+            
+            <!-- Feature 7 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-wifi text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">FREE WIFI</h3>
+                <p class="text-gray-400">Stay connected with high-speed internet throughout the gym</p>
+            </div>
+            
+            <!-- Feature 8 -->
+            <div class="card-modern group animate-on-scroll">
+                <div class="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-music text-3xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 font-heading">ENERGIZING MUSIC</h3>
+                <p class="text-gray-400">Motivating playlists to keep you pumped during workouts</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Programs Section -->
+<section id="programs" class="py-24 bg-dark-light relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-title animate-on-scroll">
+            <span class="badge-primary mb-4 inline-block">OUR PROGRAMS</span>
+            <h2 class="text-4xl md:text-5xl font-bold">TRAINING <span class="gradient-text">PROGRAMS</span></h2>
+            <div class="divider-modern"></div>
+            <p class="text-gray-400 mt-4">Choose from our wide range of specialized fitness programs</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Program 1 -->
+            <div class="relative group animate-on-scroll">
+                <div class="img-zoom-container rounded-2xl overflow-hidden h-80">
+                    <img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80" 
+                         alt="Personal Training" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent rounded-2xl"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 class="text-2xl font-bold font-heading mb-2">PERSONAL TRAINING</h3>
+                    <p class="text-gray-300 mb-4">One-on-one sessions with certified trainers</p>
+                    <a href="/accounts/login/" class="text-primary hover:text-secondary transition-colors font-semibold">
+                        LEARN MORE <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Program 2 -->
+            <div class="relative group animate-on-scroll">
+                <div class="img-zoom-container rounded-2xl overflow-hidden h-80">
+                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80" 
+                         alt="Group Classes" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent rounded-2xl"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 class="text-2xl font-bold font-heading mb-2">GROUP CLASSES</h3>
+                    <p class="text-gray-300 mb-4">High-energy group workouts for motivation</p>
+                    <a href="/accounts/login/" class="text-primary hover:text-secondary transition-colors font-semibold">
+                        LEARN MORE <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Program 3 -->
+            <div class="relative group animate-on-scroll">
+                <div class="img-zoom-container rounded-2xl overflow-hidden h-80">
+                    <img src="https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?w=800&q=80" 
+                         alt="Strength Training" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/50 to-transparent rounded-2xl"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 class="text-2xl font-bold font-heading mb-2">STRENGTH TRAINING</h3>
+                    <p class="text-gray-300 mb-4">Build muscle and increase strength</p>
+                    <a href="/accounts/login/" class="text-primary hover:text-secondary transition-colors font-semibold">
+                        LEARN MORE <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Section -->
+<section id="gallery" class="py-24 relative grid-pattern">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-title animate-on-scroll">
+            <span class="badge-primary mb-4 inline-block">OUR FACILITY</span>
+            <h2 class="text-4xl md:text-5xl font-bold">PHOTO <span class="gradient-text">GALLERY</span></h2>
+            <div class="divider-modern"></div>
+            <p class="text-gray-400 mt-4">Take a virtual tour of our state-of-the-art facility</p>
+        </div>
+        
+        <div class="gallery-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Gallery Item 1 -->
+            <div class="gallery-item group cursor-pointer animate-on-scroll">
+                <div class="img-zoom-container rounded-xl overflow-hidden aspect-square">
+                    <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&q=80" 
+                         alt="Modern Equipment" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg"><i class="fas fa-search-plus mr-2"></i>VIEW</span>
+                </div>
+            </div>
+            
+            <!-- Gallery Item 2 -->
+            <div class="gallery-item group cursor-pointer animate-on-scroll md:col-span-2">
+                <div class="img-zoom-container rounded-xl overflow-hidden aspect-video md:aspect-auto md:h-64">
+                    <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80" 
+                         alt="Weight Training Area" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg"><i class="fas fa-search-plus mr-2"></i>VIEW</span>
+                </div>
+            </div>
+            
+            <!-- Gallery Item 3 -->
+            <div class="gallery-item group cursor-pointer animate-on-scroll">
+                <div class="img-zoom-container rounded-xl overflow-hidden aspect-square">
+                    <img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80" 
+                         alt="Cardio Zone" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg"><i class="fas fa-search-plus mr-2"></i>VIEW</span>
+                </div>
+            </div>
+            
+            <!-- Gallery Item 4 -->
+            <div class="gallery-item group cursor-pointer animate-on-scroll">
+                <div class="img-zoom-container rounded-xl overflow-hidden aspect-square">
+                    <img src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?w=600&q=80" 
+                         alt="Locker Rooms" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg"><i class="fas fa-search-plus mr-2"></i>VIEW</span>
+                </div>
+            </div>
+            
+            <!-- Gallery Item 5 -->
+            <div class="gallery-item group cursor-pointer animate-on-scroll">
+                <div class="img-zoom-container rounded-xl overflow-hidden aspect-square">
+                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80" 
+                         alt="Group Training" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg"><i class="fas fa-search-plus mr-2"></i>VIEW</span>
+                </div>
+            </div>
+            
+            <!-- Gallery Item 6 -->
+            <div class="gallery-item group cursor-pointer animate-on-scroll md:col-span-2">
+                <div class="img-zoom-container rounded-xl overflow-hidden aspect-video md:aspect-auto md:h-64">
+                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80" 
+                         alt="Main Gym Floor" 
+                         class="img-zoom w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg"><i class="fas fa-search-plus mr-2"></i>VIEW</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="py-24 bg-dark-light relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-title animate-on-scroll">
+            <span class="badge-primary mb-4 inline-block">MEMBERSHIP PLANS</span>
+            <h2 class="text-4xl md:text-5xl font-bold">CHOOSE YOUR <span class="gradient-text">PLAN</span></h2>
+            <div class="divider-modern"></div>
+            <p class="text-gray-400 mt-4">Flexible membership options to suit your fitness goals</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Basic Plan -->
+            <div class="pricing-card animate-on-scroll">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold font-heading mb-4">BASIC</h3>
+                    <div class="flex items-baseline justify-center">
+                        <span class="text-5xl font-bold gradient-text">Rs</span>
+                        <span class="price-amount text-6xl font-bold ml-2" data-monthly="3000" data-yearly="30000">3,000</span>
+                        <span class="text-gray-400 ml-2">/month</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Gym access (1 shift)</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Basic equipment access</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Locker facility</span>
+                    </li>
+                    <li class="flex items-center text-gray-500">
+                        <i class="fas fa-times mr-3"></i>
+                        <span>Personal trainer</span>
+                    </li>
+                    <li class="flex items-center text-gray-500">
+                        <i class="fas fa-times mr-3"></i>
+                        <span>Group classes</span>
+                    </li>
+                </ul>
+                <a href="/accounts/login/" class="btn-secondary w-full text-center block">CHOOSE PLAN</a>
+            </div>
+            
+            <!-- Premium Plan -->
+            <div class="pricing-card featured animate-on-scroll">
+                <div class="absolute top-0 right-0 bg-primary text-white px-4 py-2 rounded-bl-xl font-bold text-sm">
+                    POPULAR
+                </div>
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold font-heading mb-4">PREMIUM</h3>
+                    <div class="flex items-baseline justify-center">
+                        <span class="text-5xl font-bold gradient-text">Rs</span>
+                        <span class="price-amount text-6xl font-bold ml-2" data-monthly="5000" data-yearly="50000">5,000</span>
+                        <span class="text-gray-400 ml-2">/month</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>All shift access</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>All equipment access</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Locker + Shower</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>2 Personal training sessions</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Group classes</span>
+                    </li>
+                </ul>
+                <a href="/accounts/login/" class="btn-primary w-full text-center block">CHOOSE PLAN</a>
+            </div>
+            
+            <!-- Elite Plan -->
+            <div class="pricing-card animate-on-scroll">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold font-heading mb-4">ELITE</h3>
+                    <div class="flex items-baseline justify-center">
+                        <span class="text-5xl font-bold gradient-text">Rs</span>
+                        <span class="price-amount text-6xl font-bold ml-2" data-monthly="8000" data-yearly="80000">8,000</span>
+                        <span class="text-gray-400 ml-2">/month</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>24/7 Gym access</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>VIP equipment zone</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Private locker + Towel</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Unlimited personal training</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span>Nutrition consultation</span>
+                    </li>
+                </ul>
+                <a href="/accounts/login/" class="btn-secondary w-full text-center block">CHOOSE PLAN</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trainers Section -->
+<section id="trainers" class="py-24 relative grid-pattern">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-title animate-on-scroll">
+            <span class="badge-primary mb-4 inline-block">OUR TEAM</span>
+            <h2 class="text-4xl md:text-5xl font-bold">EXPERT <span class="gradient-text">TRAINERS</span></h2>
+            <div class="divider-modern"></div>
+            <p class="text-gray-400 mt-4">Meet our certified professionals dedicated to your success</p>
+        </div>
+        
+        <div class="staff-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for user in recently_active_staff %}
+            <div class="card-modern text-center group animate-on-scroll">
+                <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-primary/30 group-hover:border-primary transition-colors duration-300">
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" alt="{{ user.get_full_name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full gradient-primary flex items-center justify-center">
+                            <i class="fas fa-user text-5xl text-white"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <h4 class="text-xl font-bold font-heading mb-2">{{ user.get_full_name|default:user.email }}</h4>
+                <p class="text-primary font-semibold mb-3">{{ user.instructor_profile.specialization|default:"Staff Member" }}</p>
+                {% if user.last_login %}
+                <p class="text-gray-500 text-sm">
+                    <i class="fas fa-clock mr-2"></i>Last active: {{ user.last_login|timesince }} ago
+                </p>
+                {% endif %}
+                <div class="flex justify-center space-x-3 mt-4">
+                    <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-primary transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-primary transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-primary transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="card-modern text-center col-span-full animate-on-scroll">
+                <div class="w-32 h-32 mx-auto mb-6 rounded-full gradient-primary flex items-center justify-center">
+                    <i class="fas fa-users text-5xl text-white"></i>
+                </div>
+                <h4 class="text-xl font-bold font-heading mb-2">Our Professional Team</h4>
+                <p class="text-gray-400">Login to meet our certified trainers</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-24 bg-dark-light relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-title animate-on-scroll">
+            <span class="badge-primary mb-4 inline-block">TESTIMONIALS</span>
+            <h2 class="text-4xl md:text-5xl font-bold">SUCCESS <span class="gradient-text">STORIES</span></h2>
+            <div class="divider-modern"></div>
+            <p class="text-gray-400 mt-4">Hear from our transformed members</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="testimonial-card animate-on-scroll">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-2xl font-bold text-black">A</div>
+                    <div class="ml-4">
+                        <h4 class="font-bold text-lg">Ahmed Khan</h4>
+                        <div class="flex text-primary">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-300 italic">"Lost 20kg in 4 months! The trainers are incredibly supportive and the equipment is top-notch. Best gym in town!"</p>
+            </div>
+            
+            <!-- Testimonial 2 -->
+            <div class="testimonial-card animate-on-scroll">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-2xl font-bold text-black">F</div>
+                    <div class="ml-4">
+                        <h4 class="font-bold text-lg">Fatima Ali</h4>
+                        <div class="flex text-primary">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-300 italic">"The women's shift is perfect for me. Clean facilities, great atmosphere, and I've gained so much confidence!"</p>
+            </div>
+            
+            <!-- Testimonial 3 -->
+            <div class="testimonial-card animate-on-scroll">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-2xl font-bold text-black">H</div>
+                    <div class="ml-4">
+                        <h4 class="font-bold text-lg">Hassan Raza</h4>
+                        <div class="flex text-primary">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-300 italic">"Been a member for 2 years. The personal training sessions helped me achieve my bodybuilding goals. Highly recommend!"</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-24 relative grid-pattern">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="section-title animate-on-scroll">
+            <span class="badge-primary mb-4 inline-block">GET IN TOUCH</span>
+            <h2 class="text-4xl md:text-5xl font-bold">CONTACT <span class="gradient-text">US</span></h2>
+            <div class="divider-modern"></div>
+            <p class="text-gray-400 mt-4">Visit us or send a message - we'd love to hear from you</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Contact Info -->
+            <div class="space-y-8 animate-on-scroll">
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-map-marker-alt text-2xl text-primary"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-2">Our Location</h4>
+                        <p class="text-gray-400">Main Boulevard, DHA Phase 6<br>Lahore, Pakistan</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-phone text-2xl text-primary"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-2">Phone Number</h4>
+                        <p class="text-gray-400">+92 300 1234567<br>+92 42 111 222 333</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-envelope text-2xl text-primary"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-2">Email Address</h4>
+                        <p class="text-gray-400">info@fitnessfreaks.pk<br>support@fitnessfreaks.pk</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-clock text-2xl text-primary"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-2">Opening Hours</h4>
+                        <p class="text-gray-400">Monday - Saturday: 6:00 AM - 10:00 PM<br>Sunday: 8:00 AM - 8:00 PM</p>
+                    </div>
+                </div>
+                
+                <!-- Social Links -->
+                <div class="pt-8">
+                    <h4 class="font-bold text-xl mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-12 h-12 rounded-xl glass flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 rounded-xl glass flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 rounded-xl glass flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 rounded-xl glass flex items-center justify-center hover:bg-primary transition-colors">
+                            <i class="fab fa-tiktok text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="card-modern animate-on-scroll">
+                <form class="contact-form space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Your Name</label>
+                            <input type="text" name="name" class="input-modern w-full" placeholder="John Doe" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Email Address</label>
+                            <input type="email" name="email" class="input-modern w-full" placeholder="john@example.com" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Phone Number</label>
+                            <input type="tel" name="phone" class="input-modern w-full" placeholder="+92 300 1234567">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Subject</label>
+                            <input type="text" name="subject" class="input-modern w-full" placeholder="Membership Inquiry">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Your Message</label>
+                        <textarea name="message" rows="5" class="input-modern w-full" placeholder="Tell us how we can help you..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary w-full">
+                        <i class="fas fa-paper-plane mr-2"></i>SEND MESSAGE
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary-dark/20"></div>
+    <div class="max-w-4xl mx-auto px-4 text-center relative z-10 animate-on-scroll">
+        <h2 class="text-4xl md:text-5xl font-bold font-heading mb-6">READY TO START YOUR FITNESS JOURNEY?</h2>
+        <p class="text-xl text-gray-300 mb-8">Join Fitness Freaks today and get your first week FREE!</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="/accounts/login/" class="btn-primary text-center">
+                <i class="fas fa-user-plus mr-2"></i>BECOME A MEMBER
+            </a>
+            <a href="tel:+923001234567" class="btn-secondary text-center">
+                <i class="fas fa-phone mr-2"></i>CALL NOW
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -29,7 +29,7 @@ class UserCreateForm(UserCreationForm):
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "Marcus"}),
             "last_name": forms.TextInput(attrs={"placeholder": "Merlin"}),
-            "email": forms.EmailInput(attrs={"placeholder": "admin@exarth.com"}),
+            "email": forms.EmailInput(attrs={"placeholder": "admin@fitnessfreaks.com"}),
             "username": forms.TextInput(attrs={"placeholder": "admin"}),
             "password1": forms.PasswordInput(attrs={"placeholder": "Password"}),
             "password2": forms.PasswordInput(attrs={"placeholder": "Confirm Password"}),
@@ -86,7 +86,7 @@ class UserUpdateForm(ModelForm):
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "Marcus"}),
             "last_name": forms.TextInput(attrs={"placeholder": "Merlin"}),
-            "email": forms.EmailInput(attrs={"placeholder": "admin@exarth.com"}),
+            "email": forms.EmailInput(attrs={"placeholder": "admin@fitnessfreaks.com"}),
             "username": forms.TextInput(attrs={"placeholder": "admin"}),
         }
 

@@ -22,6 +22,7 @@ urlpatterns += [
 
 """ INTERNAL REQUIRED APPS ----------------------------------------------------------------------------------------- """
 urlpatterns += [
+    path('', include('src.services.website.urls', namespace='website')),
     path('dashboard/', include('src.services.dashboard.urls', namespace='dashboard')),
     path('accounts/', include('src.services.accounts.urls', namespace='accounts')),
     path('finance/', include('src.services.finance.urls', namespace='finance')),
@@ -40,14 +41,3 @@ urlpatterns += [
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': STATIC_ROOT}),
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
-
-""" HOME -> LOGIN REDIRECT ------------------------------------------------------------------------------------------ """
-urlpatterns += [
-    path('', RedirectView.as_view(url='/accounts/login/', permanent=False)),
-]
-
-""" DEVELOPMENT ONLY -------------------------------------------------------------------------------------------- """
-if ENVIRONMENT != 'server':
-    urlpatterns += [
-        path("__reload__/", include("django_browser_reload.urls"))
-    ]

@@ -1,0 +1,56 @@
+{% load static %}
+
+<!-- Navigation -->
+<nav class="nav-modern fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <!-- Logo -->
+            <a href="#home" class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-dumbbell text-black text-xl"></i>
+                </div>
+                <span class="font-heading font-bold text-2xl tracking-wider">FITNESS<span class="text-primary">FREAKS</span></span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden lg:flex items-center space-x-1">
+                <a href="#programs" class="nav-link-modern px-4 py-2">PROGRAMS</a>
+                <a href="#gallery" class="nav-link-modern px-4 py-2">GALLERY</a>
+                <a href="#pricing" class="nav-link-modern px-4 py-2">PRICING</a>
+                <a href="#contact" class="nav-link-modern px-4 py-2">CONTACT</a>
+            </div>
+            
+            <!-- CTA Button -->
+            <div class="hidden lg:block">
+                <a href="/accounts/login/" class="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-primary to-primary-dark text-black font-semibold uppercase tracking-wide rounded-full hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 text-sm">
+                    <i class="fas fa-sign-in-alt text-sm"></i>
+                    <span>Login</span>
+                </a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="lg:hidden mobile-menu-btn text-white p-2">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu fixed top-0 left-0 w-full h-full bg-dark z-[9999]" id="mobileMenu" style="transform: translateX(-100%); transition: transform 0.3s ease-in-out; overflow: hidden;">
+        <!-- Close Button -->
+        <button class="mobile-menu-close absolute top-6 right-6 text-white p-2 z-[10000]" id="mobileMenuClose">
+            <i class="fas fa-times text-3xl hover:text-primary transition-colors"></i>
+        </button>
+
+        <div class="flex flex-col items-center justify-center h-full space-y-6 relative z-10">
+            <a href="#programs" class="text-2xl font-heading hover:text-primary transition-colors">PROGRAMS</a>
+            <a href="#gallery" class="text-2xl font-heading hover:text-primary transition-colors">GALLERY</a>
+            <a href="#pricing" class="text-2xl font-heading hover:text-primary transition-colors">PRICING</a>
+            <a href="#contact" class="text-2xl font-heading hover:text-primary transition-colors">CONTACT</a>
+            <a href="/accounts/login/" class="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-black font-semibold uppercase tracking-wide rounded-full mt-8">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Member Login</span>
+            </a>
+        </div>
+    </div>
+</nav>
