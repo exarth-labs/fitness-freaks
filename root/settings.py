@@ -19,7 +19,12 @@ DOMAIN = env('DOMAIN')
 PROTOCOL = env('PROTOCOL')
 BASE_URL = f"{PROTOCOL}://{DOMAIN}"
 ALLOWED_HOSTS = str(env('ALLOWED_HOSTS')).split(',')
-CSRF_TRUSTED_ORIGINS = [f'{PROTOCOL}://{host}' for host in ALLOWED_HOSTS]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost',
+    'http://127.0.0.1',
+]
 LOGOUT_REDIRECT_URL = '/accounts/cross-auth/'
 LOGIN_REDIRECT_URL = '/accounts/cross-auth/'
 
@@ -44,6 +49,7 @@ INSTALLED_APPS = [
     'django_filters',
     'phonenumber_field',
     'widget_tweaks',
+    'corsheaders',
 
     # WEB APPS
     'allauth',
@@ -67,6 +73,7 @@ MIDDLEWARE = [
     # DJANGO MIDDLEWARES
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -85,9 +92,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
-CORS_ALLOW_ALL_ORIGINS = False  # Only for development - remove in production
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development - remove in production
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS + ['http://localhost:8000', 'http://127.0.0.1:8000']
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',

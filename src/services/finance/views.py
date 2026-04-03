@@ -1,14 +1,14 @@
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import DetailView
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from datetime import timedelta
 
 from .filters import SubscriptionPlanFilter, MemberFilter, PaymentFilter, ExpenseFilter
 from .forms import SubscriptionPlanForm, GymShiftForm, MemberForm, PaymentForm, ExpenseForm, RenewSubscriptionForm
-from .mixins import FinanceListViewMixin, FinanceDetailViewMixin, FinanceDeleteViewMixin
+from .mixins import FinanceListViewMixin, FinanceDetailViewMixin, FinanceDeleteViewMixin, FinanceCreateViewMixin, FinanceUpdateViewMixin
 from .models import SubscriptionPlan, GymShift, Member, Payment, Expense, SubscriptionStatus, PaymentStatus
-from src.core.views import AjaxCRUDView
 
 
 """ GYM SHIFT VIEWS """
@@ -19,19 +19,30 @@ class GymShiftListView(FinanceListViewMixin):
     filter_class = None
 
 
-class GymShiftCreateView(AjaxCRUDView):
+class GymShiftCreateView(FinanceCreateViewMixin, CreateView):
     model = GymShift
     form_class = GymShiftForm
+    template_name = 'finance/gymshift_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Gym shift created successfully.")
+        return reverse_lazy('finance:gymshift_list')
 
 
-class GymShiftUpdateView(AjaxCRUDView):
+class GymShiftUpdateView(FinanceUpdateViewMixin, UpdateView):
     model = GymShift
     form_class = GymShiftForm
+    template_name = 'finance/gymshift_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Gym shift updated successfully.")
+        return reverse_lazy('finance:gymshift_list')
 
 
-class GymShiftDeleteView(FinanceDeleteViewMixin):
+class GymShiftDeleteView(FinanceDeleteViewMixin, DeleteView):
     model = GymShift
-    redirect_url = 'finance:gymshift_list'
+    template_name = 'finance/gymshift_confirm_delete.html'
+    success_url = reverse_lazy('finance:gymshift_list')
 
 
 """ SUBSCRIPTION PLAN VIEWS """
@@ -42,19 +53,30 @@ class SubscriptionPlanListView(FinanceListViewMixin):
     filter_class = SubscriptionPlanFilter
 
 
-class SubscriptionPlanCreateView(AjaxCRUDView):
+class SubscriptionPlanCreateView(FinanceCreateViewMixin, CreateView):
     model = SubscriptionPlan
     form_class = SubscriptionPlanForm
+    template_name = 'finance/subscriptionplan_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Subscription plan created successfully.")
+        return reverse_lazy('finance:subscriptionplan_list')
 
 
-class SubscriptionPlanUpdateView(AjaxCRUDView):
+class SubscriptionPlanUpdateView(FinanceUpdateViewMixin, UpdateView):
     model = SubscriptionPlan
     form_class = SubscriptionPlanForm
+    template_name = 'finance/subscriptionplan_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Subscription plan updated successfully.")
+        return reverse_lazy('finance:subscriptionplan_list')
 
 
-class SubscriptionPlanDeleteView(FinanceDeleteViewMixin):
+class SubscriptionPlanDeleteView(FinanceDeleteViewMixin, DeleteView):
     model = SubscriptionPlan
-    redirect_url = 'finance:subscriptionplan_list'
+    template_name = 'finance/subscriptionplan_confirm_delete.html'
+    success_url = reverse_lazy('finance:subscriptionplan_list')
 
 
 """ MEMBER VIEWS """
@@ -88,19 +110,30 @@ class MemberDetailView(FinanceDetailViewMixin, DetailView):
         return context
 
 
-class MemberCreateView(AjaxCRUDView):
+class MemberCreateView(FinanceCreateViewMixin, CreateView):
     model = Member
     form_class = MemberForm
+    template_name = 'finance/member_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Member created successfully.")
+        return reverse_lazy('finance:member_detail', kwargs={'pk': self.object.pk})
 
 
-class MemberUpdateView(AjaxCRUDView):
+class MemberUpdateView(FinanceUpdateViewMixin, UpdateView):
     model = Member
     form_class = MemberForm
+    template_name = 'finance/member_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Member updated successfully.")
+        return reverse_lazy('finance:member_detail', kwargs={'pk': self.object.pk})
 
 
-class MemberDeleteView(FinanceDeleteViewMixin):
+class MemberDeleteView(FinanceDeleteViewMixin, DeleteView):
     model = Member
-    redirect_url = 'finance:member_list'
+    template_name = 'finance/member_confirm_delete.html'
+    success_url = reverse_lazy('finance:member_list')
 
 
 """ PAYMENT VIEWS """
@@ -116,22 +149,34 @@ class PaymentDetailView(FinanceDetailViewMixin, DetailView):
     template_name = 'finance/payment_detail.html'
 
 
-class PaymentCreateView(AjaxCRUDView):
+class PaymentCreateView(FinanceCreateViewMixin, CreateView):
     model = Payment
     form_class = PaymentForm
+    template_name = 'finance/payment_form.html'
 
-    def post_additional_data(self, instance):
-        instance.received_by = self.request.user
+    def form_valid(self, form):
+        form.instance.received_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        messages.success(self.request, "Payment recorded successfully.")
+        return reverse_lazy('finance:payment_detail', kwargs={'pk': self.object.pk})
 
 
-class PaymentUpdateView(AjaxCRUDView):
+class PaymentUpdateView(FinanceUpdateViewMixin, UpdateView):
     model = Payment
     form_class = PaymentForm
+    template_name = 'finance/payment_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Payment updated successfully.")
+        return reverse_lazy('finance:payment_list')
 
 
-class PaymentDeleteView(FinanceDeleteViewMixin):
+class PaymentDeleteView(FinanceDeleteViewMixin, DeleteView):
     model = Payment
-    redirect_url = 'finance:payment_list'
+    template_name = 'finance/payment_confirm_delete.html'
+    success_url = reverse_lazy('finance:payment_list')
 
 
 """ EXPENSE VIEWS """
@@ -142,65 +187,81 @@ class ExpenseListView(FinanceListViewMixin):
     filter_class = ExpenseFilter
 
 
-class ExpenseCreateView(AjaxCRUDView):
+class ExpenseCreateView(FinanceCreateViewMixin, CreateView):
     model = Expense
     form_class = ExpenseForm
+    template_name = 'finance/expense_form.html'
 
-    def post_additional_data(self, instance):
-        instance.added_by = self.request.user
+    def form_valid(self, form):
+        form.instance.added_by = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        messages.success(self.request, "Expense recorded successfully.")
+        return reverse_lazy('finance:expense_list')
 
 
-class ExpenseUpdateView(AjaxCRUDView):
+class ExpenseUpdateView(FinanceUpdateViewMixin, UpdateView):
     model = Expense
     form_class = ExpenseForm
+    template_name = 'finance/expense_form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Expense updated successfully.")
+        return reverse_lazy('finance:expense_list')
 
 
-class ExpenseDeleteView(FinanceDeleteViewMixin):
+class ExpenseDeleteView(FinanceDeleteViewMixin, DeleteView):
     model = Expense
-    redirect_url = 'finance:expense_list'
+    template_name = 'finance/expense_confirm_delete.html'
+    success_url = reverse_lazy('finance:expense_list')
 
 
 """ QUICK ACTIONS """
 
 
-class RenewMemberSubscriptionView(AjaxCRUDView):
-    """Quick action to renew a member's subscription"""
+class RenewMemberSubscriptionView(FinanceCreateViewMixin, CreateView):
+    """Renew a member's subscription - separate page view"""
     model = Payment
+    form_class = RenewSubscriptionForm
+    template_name = 'finance/member_renew.html'
 
-    def post(self, request, *args, **kwargs):
-        member = get_object_or_404(Member, pk=kwargs.get('pk'))
-        form = RenewSubscriptionForm(request.POST)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['member'] = get_object_or_404(Member, pk=self.kwargs.get('pk'))
+        return context
 
-        if form.is_valid():
-            plan = form.cleaned_data['subscription_plan']
+    def form_valid(self, form):
+        member = get_object_or_404(Member, pk=self.kwargs.get('pk'))
+        plan = form.cleaned_data['subscription_plan']
 
-            # Calculate new subscription period
-            today = timezone.now().date()
-            if member.subscription_end and member.subscription_end > today:
-                # Extend from current end date
-                period_start = member.subscription_end
-            else:
-                period_start = today
-            period_end = period_start + timedelta(days=plan.duration_days)
+        # Calculate new subscription period
+        today = timezone.now().date()
+        if member.subscription_end and member.subscription_end > today:
+            period_start = member.subscription_end
+        else:
+            period_start = today
+        period_end = period_start + timedelta(days=plan.duration_days)
 
-            # Create payment
-            payment = Payment.objects.create(
-                member=member,
-                subscription_plan=plan,
-                amount=form.cleaned_data['amount'],
-                discount=form.cleaned_data.get('discount') or 0,
-                payment_method=form.cleaned_data['payment_method'],
-                reference_number=form.cleaned_data.get('reference_number'),
-                notes=form.cleaned_data.get('notes'),
-                period_start=period_start,
-                period_end=period_end,
-                status=PaymentStatus.PAID,
-                received_by=request.user
-            )
+        # Create payment
+        payment = Payment.objects.create(
+            member=member,
+            subscription_plan=plan,
+            amount=form.cleaned_data['amount'],
+            discount=form.cleaned_data.get('discount') or 0,
+            payment_method=form.cleaned_data['payment_method'],
+            reference_number=form.cleaned_data.get('reference_number'),
+            notes=form.cleaned_data.get('notes'),
+            period_start=period_start,
+            period_end=period_end,
+            status=PaymentStatus.PAID,
+            received_by=self.request.user
+        )
 
-            messages.success(request, f'Subscription renewed successfully until {period_end}')
-            return redirect('finance:member_detail', pk=member.pk)
+        messages.success(self.request, f'Subscription renewed successfully until {period_end}')
+        self.object = payment
+        return super().form_valid(form)
 
-        messages.error(request, 'Failed to renew subscription. Please check the form.')
-        return redirect('finance:member_detail', pk=member.pk)
+    def get_success_url(self):
+        return reverse_lazy('finance:member_detail', kwargs={'pk': self.kwargs.get('pk')})
 

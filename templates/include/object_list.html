@@ -35,11 +35,9 @@
                     <div class="d-flex align-items-center">
                         {% with model_class|create_action_url_for:request.user as create_url %}
                             {% if create_url %}
-                                <button class="btn fw-bold btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#CreateModelForm{{ model_class|get_model_name }}">
+                                <a href="{% url create_url %}" class="btn fw-bold btn-primary">
                                     <i class="bx bx-plus-circle me-1"></i> Add {{ model_verbose_name }}
-                                </button>
-                                {% model_form_create create_url form model_class %}
+                                </a>
                             {% endif %}
                         {% endwith %}
                     </div>
@@ -137,17 +135,13 @@
                                                     </a>
                                                 {% endif %}
                                                 {% if action_urls.update %}
-                                                    <a data-bs-toggle="modal"
-                                                       data-bs-target="#{{ obj|get_model_name }}ModelFormUpdate{{ obj.id }}"
-                                                       href="javascript:void(0);"
+                                                    <a href="{% url action_urls.update obj.id %}"
                                                        class="btn btn-sm btn-soft-primary" title="Edit">
                                                         <i class="bx bx-edit"></i>
                                                     </a>
                                                 {% endif %}
                                                 {% if action_urls.delete %}
-                                                    <a data-bs-toggle="modal"
-                                                       data-bs-target="#{{ obj|get_model_name }}ModelFormDelete{{ obj.id }}"
-                                                       href="javascript:void(0);"
+                                                    <a href="{% url action_urls.delete obj.id %}"
                                                        class="btn btn-sm btn-soft-danger" title="Delete">
                                                         <i class="bx bx-trash"></i>
                                                     </a>
@@ -173,23 +167,6 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- Modals Container -->
-                    <div class="modals-container">
-                        {% for obj in object_list %}
-                            {% with obj|action_urls_for:request.user as action_urls %}
-                                {% if action_urls.update %}
-                                    {% with object_forms|get_item:obj.id as current_form %}
-                                        {% model_form_update action_urls.update obj current_form %}
-                                    {% endwith %}
-                                {% endif %}
-                                {% if action_urls.delete %}
-                                    {% model_form_delete action_urls.delete obj %}
-                                {% endif %}
-                            {% endwith %}
-                        {% endfor %}
-                    </div>
-                    <!-- End Modals Container -->
 
                     <!-- Pagination -->
                     {% if is_paginated %}

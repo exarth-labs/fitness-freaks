@@ -16,6 +16,10 @@ from .mixins import StaffMixin, SuperUserMixin
 from .models import User, Instructor
 from ...core.mixins import CustomPermissionMixin
 
+# Business app labels - only these apps' permissions are shown to staff
+# 'auth' (Permission & Group) is included but only visible to superusers via template guard
+ALLOWED_APP_LABELS = {'accounts', 'finance', 'core', 'whisper', 'auth'}
+
 
 class LogoutView(LoginRequiredMixin, View):
 
@@ -60,8 +64,11 @@ class UserDetailView(StaffMixin, CustomPermissionMixin, DetailView):
 
         if self.request.user.is_superuser:
             user_permissions = user.user_permissions.all()
-            all_permissions = Permission.objects.select_related('content_type').all()
-            
+            # Only show permissions for allowed apps (includes auth for superusers)
+            all_permissions = Permission.objects.select_related('content_type').filter(
+                content_type__app_label__in=ALLOWED_APP_LABELS
+            )
+
             for permission in all_permissions:
                 permission.checked = permission in user_permissions
 
