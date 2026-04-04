@@ -179,7 +179,7 @@ NGINX_CONF="/etc/nginx/sites-available/$PROJECT_DIR_NAME"
 cat << EOF > $NGINX_CONF
 server {
     listen 80;
-    server_name $DOMAIN www.$DOMAIN;
+    server_name $DOMAIN;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location / {
@@ -213,7 +213,7 @@ ln -sf /snap/bin/certbot /usr/bin/certbot
 
 # Request Certificate and update Nginx configs automatically
 echo "Attempting to run Certbot. (This will fail gracefully if the DNS isn't pointed yet)"
-certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m $ADMIN_EMAIL || echo "Certbot check skipped or failed. Run 'sudo certbot --nginx' manually once DNS A records point to your instance."
+certbot --nginx -d $DOMAIN --non-interactive --agree-tos -m $ADMIN_EMAIL || echo "Certbot check skipped or failed. Run 'sudo certbot --nginx' manually once DNS A records point to your instance."
 
 echo "========================================="
 echo "Deployment Setup Complete!"
