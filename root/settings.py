@@ -223,6 +223,7 @@ OLD_PASSWORD_FIELD_ENABLED = True
 LOGOUT_ON_PASSWORD_CHANGE = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_SIGNUP_ENABLED = False
+ACCOUNT_RATE_LIMITS = False
 
 """ SECURITY (production only) --------------------------------------------------------------------- """
 
