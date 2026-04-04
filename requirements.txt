@@ -26,3 +26,4 @@ paramiko
 
 mailchimp_transactional
 fido2
+django-widget-tweaks
