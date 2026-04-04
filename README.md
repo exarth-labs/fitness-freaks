@@ -18,6 +18,7 @@ chmod +x docs/bash/setup.sh && ./docs/bash/setup.sh
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp docs/configs/.env .env          # then fill in values
+python manage.py makemigrations accounts core finance whisper
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
@@ -85,8 +86,8 @@ python manage.py send_expiry_reminders
 ### Standard Django
 
 ```bash
+python manage.py makemigrations accounts core finance whisper
 python manage.py migrate
-python manage.py makemigrations
 python manage.py collectstatic
 python manage.py createsuperuser
 python manage.py runserver
