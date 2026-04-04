@@ -8,7 +8,7 @@
 .bg-gradient-orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
 .bg-gradient-indigo { background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%); }
 .bg-gradient-pink { background: linear-gradient(135deg, #c471f5 0%, #fa71cd 100%); }
-.bg-gradient-primary { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); }
+.bg-gradient-primary { background: linear-gradient(135deg, #ffa200 0%, #cc8200 100%); }
 .bg-gradient-success { background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%); }
 .bg-gradient-dark { background: linear-gradient(135deg, #5a5c69 0%, #3a3b45 100%); }
 .bg-gradient-info { background: linear-gradient(135deg, #36b9cc 0%, #258391 100%); }
@@ -40,7 +40,7 @@
 
 /* Gradient buttons */
 .btn-primary-gradient {
-    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    background: linear-gradient(135deg, #ffa200 0%, #cc8200 100%);
     color: white;
 }
 
@@ -76,13 +76,13 @@
 
 /* Outline buttons */
 .btn-outline-primary {
-    border: 1px solid #4e73df;
-    color: #4e73df;
+    border: 1px solid #ffa200;
+    color: #ffa200;
     background: transparent;
 }
 
 .btn-outline-primary:hover {
-    background: #4e73df;
+    background: #ffa200;
     color: white;
 }
 

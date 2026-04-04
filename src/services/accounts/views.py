@@ -11,10 +11,14 @@ from django.views.generic import View, DetailView, UpdateView, CreateView, Delet
 from django.contrib.auth import logout, get_user_model
 
 from .filters import UserFilter
-from .forms import UserCreateForm, UserUpdateForm, UserUpdateLimitedForm, GroupForm
+from .forms import UserCreateForm, UserUpdateForm, UserUpdateLimitedForm, GroupForm, InstructorForm
 from .mixins import StaffMixin, SuperUserMixin
-from .models import User
+from .models import User, Instructor
 from ...core.mixins import CustomPermissionMixin
+
+# Business app labels - only these apps' permissions are shown to staff
+# 'auth' (Permission & Group) is included but only visible to superusers via template guard
+ALLOWED_APP_LABELS = {'accounts', 'finance', 'core', 'whisper', 'auth'}
 
 
 class LogoutView(LoginRequiredMixin, View):
@@ -60,8 +64,11 @@ class UserDetailView(StaffMixin, CustomPermissionMixin, DetailView):
 
         if self.request.user.is_superuser:
             user_permissions = user.user_permissions.all()
-            all_permissions = Permission.objects.select_related('content_type').all()
-            
+            # Only show permissions for allowed apps (includes auth for superusers)
+            all_permissions = Permission.objects.select_related('content_type').filter(
+                content_type__app_label__in=ALLOWED_APP_LABELS
+            )
+
             for permission in all_permissions:
                 permission.checked = permission in user_permissions
 
@@ -209,3 +216,44 @@ class UserGroupPermissionDeleteView(SuperUserMixin, DeleteView):
         messages.success(self.request, "Group Successfully Deleted")
         user_id = self.kwargs.get('user_id')
         return reverse_lazy('accounts:user_detail', kwargs={'pk': user_id})
+
+
+""" INSTRUCTOR VIEWS """
+
+
+class InstructorListView(StaffMixin, ListView):
+    model = Instructor
+    paginate_by = 50
+    queryset = Instructor.objects.select_related('user').order_by('-created_on')
+
+
+class InstructorDetailView(StaffMixin, DetailView):
+    model = Instructor
+    template_name = 'accounts/instructor_detail.html'
+
+
+class InstructorCreateView(StaffMixin, CreateView):
+    model = Instructor
+    form_class = InstructorForm
+
+    def get_success_url(self):
+        messages.success(self.request, "Instructor added successfully.")
+        return reverse_lazy('accounts:instructor_detail', kwargs={'pk': self.object.pk})
+
+
+class InstructorUpdateView(StaffMixin, UpdateView):
+    model = Instructor
+    form_class = InstructorForm
+
+    def get_success_url(self):
+        messages.success(self.request, "Instructor updated successfully.")
+        return self.request.META.get('HTTP_REFERER', reverse_lazy('accounts:instructor_list'))
+
+
+class InstructorDeleteView(StaffMixin, DeleteView):
+    model = Instructor
+    success_url = reverse_lazy('accounts:instructor_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "Instructor removed.")
+        return super().delete(request, *args, **kwargs)

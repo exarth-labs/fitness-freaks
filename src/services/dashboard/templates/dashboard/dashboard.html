@@ -5,190 +5,304 @@
 
 {% block subtitle %} Dashboard {% endblock %}
 
+{% block css_down %}
+<style>
+    .kpi-card {
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .08) !important;
+    }
+
+    .kpi-card .kpi-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+
+
+    .today-bar {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        color: #212529;
+    }
+
+    .today-bar .divider {
+        width: 1px;
+        background: rgba(0, 0, 0, 0.1);
+        height: 40px;
+    }
+
+    .today-stat-label {
+        font-size: 0.72rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+
+    .today-stat-value {
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .chart-card .card-header {
+        border-bottom: 1px solid #f0f2f5;
+        padding: 1rem 1.25rem 0.75rem;
+    }
+
+    .chart-title {
+        font-size: .95rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .chart-subtitle {
+        font-size: .75rem;
+        color: #94a3b8;
+    }
+
+    .method-badge {
+        font-size: .7rem;
+        padding: .25em .6em;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .table th {
+        font-size: .75rem;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .table td {
+        font-size: .85rem;
+        vertical-align: middle;
+    }
+
+    .avatar-xs {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .75rem;
+        font-weight: 700;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="container-fluid">
 
-    <div class="container-fluid">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <div>
-                        <h4 class="mb-0 fw-bold">Gym Dashboard</h4>
-                        <p class="text-muted mb-0">Welcome
-                            back, {{ request.user.first_name|default:request.user.email }}!</p>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'finance:member_create' %}" class="btn btn-primary">
-                            <i class="bx bx-user-plus"></i> New Member
-                        </a>
-                        <a href="{% url 'finance:payment_create' %}" class="btn btn-success">
-                            <i class="bx bx-money"></i> Collect Fee
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    <!-- Year Stats Summary -->
-    <div class="row">
+    <!-- ── PAGE HEADER ────────────────────────────────────────────── -->
+    <div class="row mb-3">
         <div class="col-12">
-            <div class="card shadow-sm border">
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-md-3">
-                            <h6 class="text-muted">Year Revenue</h6>
-                            <h4 class="text-success mb-0">PKR {{ revenue_year|intcomma }}</h4>
-                        </div>
-                        <div class="col-md-3">
-                            <h6 class="text-muted">Year Expenses</h6>
-                            <h4 class="text-danger mb-0">PKR {{ expenses_year|intcomma }}</h4>
-                        </div>
-                        <div class="col-md-3">
-                            <h6 class="text-muted">Year Net Profit</h6>
-                            <h4 class="{% if net_profit_year >= 0 %}text-dark{% else %}text-danger{% endif %} mb-0">PKR {{ net_profit_year|intcomma }}</h4>
-                        </div>
-                        <div class="col-md-3">
-                            <h6 class="text-muted">New Members (Month)</h6>
-                            <h4 class="text-dark mb-0">{{ new_members_month|intcomma }}</h4>
-                        </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0 fw-bold text-dark">Gym Dashboard</h4>
+                    <p class="text-muted mb-0 small">
+                        Welcome back, <strong>{{ request.user.first_name|default:request.user.email }}</strong>
+                        &nbsp;&middot;&nbsp; Today is {% now "l, N j Y" %}
+                    </p>
+                </div>
+                <div class="d-flex gap-2 mt-2 mt-sm-0">
+                    <a href="{% url 'finance:member_create' %}" class="btn btn-primary px-3 shadow-sm">
+                        <i class="bx bx-user-plus me-1"></i> New Member
+                    </a>
+                    <a href="{% url 'finance:payment_create' %}" class="btn btn-primary px-3 shadow-sm">
+                        <i class="bx bx-money me-1"></i> Collect Fee
+                    </a>
+                    <a href="{% url 'finance:expense_create' %}" class="btn btn-outline-primary px-3 shadow-sm">
+                        <i class="bx bx-receipt me-1"></i> Add Expense
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── TODAY'S SNAPSHOT BAR ──────────────────────────────────── -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="today-bar p-3">
+                <div class="d-flex flex-wrap align-items-center gap-4">
+                    <div>
+                        <div class="today-stat-label">Today's Collection</div>
+                        <div class="today-stat-value">PKR {{ revenue_today|intcomma }}</div>
+                    </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div>
+                        <div class="today-stat-label">Payments Today</div>
+                        <div class="today-stat-value">{{ payments_today }}</div>
+                    </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div>
+                        <div class="today-stat-label">New Members Today</div>
+                        <div class="today-stat-value">{{ new_members_today }}</div>
+                    </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div>
+                        <div class="today-stat-label">Today's Expenses</div>
+                        <div class="today-stat-value">PKR {{ expenses_today|intcomma }}</div>
+                    </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div class="ms-auto text-end d-none d-md-block">
+                        <div class="today-stat-label">Active Rate</div>
+                        <div class="today-stat-value text-dark">{{ active_rate }}%</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Stats Cards Row 1: Members -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 me-3">
-                            <i class="bx bx-group fs-2 text-muted"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="text-muted fw-medium mb-1">Total Members</p>
-                            <h4 class="mb-0">{{ total_members|intcomma }}</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 me-3">
-                            <i class="bx bx-user-check fs-2 text-muted"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="text-muted fw-medium mb-1">Active Members</p>
-                            <h4 class="mb-0">{{ active_members|intcomma }}</h4>
-                        </div>
+    <!-- ── MEMBER STATISTICS ──────────────────────────────────────── -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="today-bar p-3">
+                <div class="d-flex flex-wrap align-items-center gap-4">
+                    <div>
+                        <div class="today-stat-label">Total Members</div>
+                        <div class="today-stat-value">{{ total_members|intcomma }}</div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 me-3">
-                            <i class="bx bx-user-x fs-2 text-muted"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="text-muted fw-medium mb-1">Expired Members</p>
-                            <h4 class="mb-0">{{ expired_members|intcomma }}</h4>
-                        </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div>
+                        <div class="today-stat-label">Active</div>
+                        <div class="today-stat-value">{{ active_members|intcomma }}</div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0 me-3">
-                            <i class="bx bx-time-five fs-2 text-muted"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="text-muted fw-medium mb-1">Expiring Soon</p>
-                            <h4 class="mb-0">{{ expiring_soon|intcomma }}</h4>
-                            <small class="text-muted">Next 7 days</small>
-                        </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div>
+                        <div class="today-stat-label">Expired</div>
+                        <div class="today-stat-value">{{ expired_members|intcomma }}</div>
+                    </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div>
+                        <div class="today-stat-label">Expiring Soon</div>
+                        <div class="today-stat-value">{{ expiring_soon|intcomma }}</div>
+                    </div>
+                    <div class="divider d-none d-sm-block"></div>
+                    <div>
+                        <div class="today-stat-label">Defaulters</div>
+                        <div class="today-stat-value">{{ defaulters_count|intcomma }}</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Stats Cards Row 2: Revenue -->
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
+    <!-- ── FINANCIALS ────────────────────────────────────────────── -->
+    <div class="d-flex align-items-center mb-3 mt-4">
+        <h6 class="mb-0 text-uppercase text-muted fw-bold small">Financials</h6>
+        <div class="flex-grow-1 border-bottom ms-3"></div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-xl-4 col-md-6">
+            <div class="card kpi-card shadow-none border h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-muted mb-1">Today's Collection</p>
-                            <h3 class="mb-0">PKR {{ revenue_today|intcomma }}</h3>
-                            <small class="text-muted">{{ payments_today }} payment(s)</small>
+                            <p class="text-muted small mb-1 fw-medium">Year Revenue <span class="badge bg-light text-muted border fw-normal" style="font-size:.65rem;vertical-align:middle;">Yearly</span></p>
+                            <h3 class="fw-bold text-dark mb-0">PKR {{ revenue_year|intcomma }}</h3>
+                            <small class="text-muted">Jan – present</small>
                         </div>
-                        <div>
-                            <i class="bx bx-wallet-alt fs-1 text-muted"></i>
+                        <div class="kpi-icon bg-light text-dark">
+                            <i class="bx bx-trending-up"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
+        <div class="col-xl-4 col-md-6">
+            <div class="card kpi-card shadow-none border h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-muted mb-1">Month Revenue</p>
-                            <h3 class="mb-0 text-success">PKR {{ revenue_month|intcomma }}</h3>
-                            <small class="text-muted">{{ payments_month }} payment(s)</small>
-                        </div>
-                        <div>
-                            <i class="bx bx-trending-up fs-1 text-muted"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="text-muted mb-1">Month Expenses</p>
-                            <h3 class="mb-0 text-danger">PKR {{ expenses_month|intcomma }}</h3>
+                            <p class="text-muted small mb-1 fw-medium">Year Expenses</p>
+                            <h3 class="fw-bold text-dark mb-0">PKR {{ expenses_year|intcomma }}</h3>
                             <small class="text-muted">Operating costs</small>
                         </div>
-                        <div>
-                            <i class="bx bx-trending-down fs-1 text-muted"></i>
+                        <div class="kpi-icon bg-light text-dark">
+                            <i class="bx bx-trending-down"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border">
+        <div class="col-xl-4 col-md-6">
+            <div class="card kpi-card shadow-none border h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-muted mb-1">Net Profit</p>
-                            <h3 class="mb-0 {% if net_profit_month >= 0 %}text-dark{% else %}text-danger{% endif %}">PKR {{ net_profit_month|intcomma }}</h3>
-                            <small class="text-muted">This month</small>
+                            <p class="text-muted small mb-1 fw-medium">Year Net Profit</p>
+                            <h3 class="fw-bold {% if net_profit_year >= 0 %}text-primary{% else %}text-dark{% endif %} mb-0">PKR {{ net_profit_year|intcomma }}</h3>
+                            <small class="text-muted">Revenue – Expenses</small>
                         </div>
+                        <div class="kpi-icon bg-light text-dark">
+                            <i class="bx bx-dollar-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3 mb-3">
+        <div class="col-xl-4 col-md-6">
+            <div class="card kpi-card shadow-none border h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <i class="bx bx-calculator fs-1 text-muted"></i>
+                            <p class="text-muted small mb-1 fw-medium">Month Revenue <span class="badge bg-light text-muted border fw-normal" style="font-size:.65rem;vertical-align:middle;">Monthly</span></p>
+                            <h3 class="fw-bold text-dark mb-0">PKR {{ revenue_month|intcomma }}</h3>
+                            <small class="text-muted">{{ payments_month }} payment(s)</small>
+                        </div>
+                        <div class="kpi-icon bg-light text-dark">
+                            <i class="bx bx-wallet-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card kpi-card shadow-none border h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted small mb-1 fw-medium">Month Expenses</p>
+                            <h3 class="fw-bold text-dark mb-0">PKR {{ expenses_month|intcomma }}</h3>
+                            <small class="text-muted">Operating costs</small>
+                        </div>
+                        <div class="kpi-icon bg-light text-dark">
+                            <i class="bx bx-coin-stack"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="card kpi-card shadow-none border h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted small mb-1 fw-medium">Month Net Profit</p>
+                            <h3 class="fw-bold {% if net_profit_month >= 0 %}text-primary{% else %}text-dark{% endif %} mb-0">PKR {{ net_profit_month|intcomma }}</h3>
+                            <small class="text-muted">Revenue – Expenses</small>
+                        </div>
+                        <div class="kpi-icon bg-light text-dark">
+                            <i class="bx bx-calculator"></i>
                         </div>
                     </div>
                 </div>
@@ -196,137 +310,292 @@
         </div>
     </div>
 
-    <!-- Charts & Tables Row -->
-    <div class="row">
-        <!-- Revenue Chart -->
-        <div class="col-xl-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bx bx-line-chart text-muted me-2"></i>Revenue vs Expenses</h5>
-                    <small class="text-muted">Last 6 Months</small>
+    <!-- ── CHARTS & ANALYTICS ─────────────────────────────────────── -->
+    <div class="d-flex align-items-center mb-3 mt-4">
+        <h6 class="mb-0 text-uppercase text-muted fw-bold small">Analytics & Trends</h6>
+        <div class="flex-grow-1 border-bottom ms-3"></div>
+    </div>
+    <div class="row g-3 mb-3">
+        <div class="col-xl-6">
+            <div class="card chart-card shadow-none border h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="chart-title">Revenue vs Expenses</div>
+                        <div class="chart-subtitle">Last 6 months overview</div>
+                    </div>
+                    <div class="d-flex gap-3 small">
+                        <span><span
+                                style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#10b981;margin-right:4px;"></span>Revenue</span>
+                        <span><span
+                                style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ef4444;margin-right:4px;"></span>Expenses</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div id="revenueChart"></div>
                 </div>
             </div>
         </div>
-
-        <!-- Plan Distribution -->
-        <div class="col-xl-4">
-            <div class="card shadow-sm">
+        <div class="col-xl-6">
+            <div class="card chart-card shadow-none border h-100">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bx bx-pie-chart-alt-2 text-muted me-2"></i>Active Plans</h5>
+                    <div class="chart-title">Plan Distribution</div>
+                    <div class="chart-subtitle">Active members by plan</div>
                 </div>
                 <div class="card-body">
                     {% if plan_distribution %}
-                        <div id="planChart"></div>
-                        <hr>
-                        <ul class="list-group list-group-flush">
-                            {% for plan in plan_distribution %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    {{ plan.name }}
-                                    <span class="badge bg-secondary rounded-pill">{{ plan.member_count }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                    <div id="planChart"></div>
+                    <ul class="list-unstyled mt-2 mb-0">
+                        {% for plan in plan_distribution %}
+                        <li class="d-flex justify-content-between align-items-center py-1 border-bottom border-light">
+                            <span class="small text-truncate me-2" style="max-width:160px;">{{ plan.name }}</span>
+                            <span class="badge bg-light text-dark border rounded-pill">{{ plan.member_count }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
                     {% else %}
-                        <div class="text-center py-4">
-                            <i class="bx bx-info-circle text-muted fs-1"></i>
-                            <p class="text-muted mb-0">No active plans yet</p>
-                        </div>
+                    <div class="text-center py-5">
+                        <i class="bx bx-info-circle text-muted fs-1"></i>
+                        <p class="text-muted small mb-0 mt-2">No active plans yet</p>
+                    </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Alerts & Recent Activity Row -->
-    <div class="row">
-        <!-- Expiring Soon Alert -->
+    <!-- ── CHARTS ROW 2: New Members + Payment Methods ────────────── -->
+    <div class="row g-3 mb-3">
         <div class="col-xl-6">
-            <div class="card shadow-sm border">
+            <div class="card chart-card shadow-none border h-100">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bx bx-alarm-exclamation text-warning me-2"></i>Expiring in 7 Days</h5>
+                    <div class="chart-title">New Member Enrollments</div>
+                    <div class="chart-subtitle">Monthly sign-ups over last 6 months</div>
+                </div>
+                <div class="card-body">
+                    <div id="membersChart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card chart-card shadow-none border h-100">
+                <div class="card-header bg-white">
+                    <div class="chart-title">Payment Methods</div>
+                    <div class="chart-subtitle">This month's transactions by channel</div>
+                </div>
+                <div class="card-body">
+                    {% if payment_methods %}
+                    <div id="methodChart"></div>
+                    <ul class="list-unstyled mt-3 mb-0">
+                        {% for m in payment_methods %}
+                        <li class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge method-badge bg-secondary">{{ m.payment_method|upper }}</span>
+                                <span class="small text-muted">{{ m.count }} txn{{ m.count|pluralize }}</span>
+                            </div>
+                            <strong class="small text-dark">PKR {{ m.total|floatformat:0|intcomma }}</strong>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bx bx-info-circle text-muted fs-1"></i>
+                        <p class="text-muted small mb-0 mt-2">No payments this month</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ── OPERATIONAL TABLES ─────────────────────────────────────── -->
+    <div class="d-flex align-items-center mb-3 mt-4">
+        <h6 class="mb-0 text-uppercase text-muted fw-bold small">Operational Alerts & Feed</h6>
+        <div class="flex-grow-1 border-bottom ms-3"></div>
+    </div>
+    <div class="row g-3 mb-3">
+        <div class="col-xl-6">
+            <div class="card shadow-none border h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="chart-title">
+                            Expiring in 7 Days
+                            {% if expiring_soon %}<span class="badge bg-warning text-dark ms-1">{{ expiring_soon }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <a href="{% url 'finance:member_list' %}?status=active"
+                        class="btn btn-sm btn-outline-secondary">View All</a>
                 </div>
                 <div class="card-body p-0">
                     {% if expiring_members %}
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Member</th>
-                                        <th>Plan</th>
-                                        <th>Expires</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for member in expiring_members %}
-                                        <tr>
-                                            <td>
-                                                <strong>{{ member.user.get_full_name|default:member.user.email }}</strong>
-                                                <br><small class="text-muted">{{ member.user.phone_number|default:"" }}</small>
-                                            </td>
-                                            <td>{{ member.subscription_plan.name|default:"-" }}</td>
-                                            <td>
-                                                <span class="badge bg-secondary">{{ member.subscription_end|date:"M d" }}</span>
-                                                <br><small>{{ member.days_remaining }} days left</small>
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'finance:member_detail' pk=member.pk %}" class="btn btn-sm btn-success">
-                                                    <i class="bx bx-refresh"></i> Renew
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Plan</th>
+                                    <th>Expires</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for member in expiring_members %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-xs bg-light border text-dark fw-bold">
+                                                {{ member.user.first_name|first|default:member.user.email|first|upper }}
+                                            </div>
+                                            <div>
+                                                <div class="fw-medium">{{ member.user.get_full_name|default:member.user.email|truncatechars:18 }}</div>
+                                                <small class="text-muted">{{ member.user.phone_number|default:"" }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="text-muted small">{{ member.subscription_plan.name|default:"–" }}</span></td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">{{ member.subscription_end|date:"M d" }}</span>
+                                        <div class="small text-muted">{{ member.days_remaining }}d left</div>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'finance:member_detail' pk=member.pk %}"
+                                            class="btn btn-sm btn-outline-secondary">
+                                            <i class="bx bx-refresh"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     {% else %}
-                        <div class="text-center py-4">
-                            <i class="bx bx-check-circle text-success fs-1"></i>
-                            <p class="text-muted mb-0">No members expiring soon</p>
-                        </div>
+                    <div class="text-center py-5">
+                        <i class="bx bx-check-circle text-dark fs-1"></i>
+                        <p class="text-muted small mb-0 mt-2">No members expiring soon</p>
+                    </div>
                     {% endif %}
                 </div>
             </div>
         </div>
 
-        <!-- Recent Payments -->
         <div class="col-xl-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bx bx-receipt text-muted me-2"></i>Recent Payments</h5>
+            <div class="card shadow-none border h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div class="chart-title">Recent Payments</div>
+                    <a href="{% url 'finance:payment_list' %}" class="btn btn-sm btn-outline-secondary">View All</a>
                 </div>
                 <div class="card-body p-0">
                     {% if recent_payments %}
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Member</th>
-                                        <th>Amount</th>
-                                        <th>Method</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for payment in recent_payments %}
-                                        <tr>
-                                            <td>{{ payment.member.user.get_full_name|default:payment.member.user.email|truncatechars:20 }}</td>
-                                            <td><strong class="text-success">PKR {{ payment.amount|intcomma }}</strong></td>
-                                            <td><span class="badge bg-secondary">{{ payment.get_payment_method_display }}</span></td>
-                                            <td>{{ payment.payment_date|date:"M d, h:i A" }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in recent_payments %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-xs bg-light border text-dark fw-bold">{{ payment.member.user.first_name|first|default:payment.member.user.email|first|upper }}</div>
+                                            <span class="fw-medium">{{ payment.member.user.get_full_name|default:payment.member.user.email|truncatechars:16 }}</span>
+                                        </div>
+                                    </td>
+                                    <td><strong class="text-dark">PKR {{ payment.amount|intcomma }}</strong></td>
+                                    <td>
+                                        <span class="badge bg-secondary method-badge">{{ payment.get_payment_method_display }}</span>
+                                    </td>
+                                    <td class="text-muted small">{{ payment.payment_date|date:"M d, h:i A" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     {% else %}
-                        <div class="text-center py-4">
-                            <i class="bx bx-info-circle text-muted fs-1"></i>
-                            <p class="text-muted mb-0">No recent payments</p>
+                    <div class="text-center py-5">
+                        <i class="bx bx-info-circle text-muted fs-1"></i>
+                        <p class="text-muted small mb-0 mt-2">No recent payments</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── DEFAULTERS ─────────────────────────────────────────────── -->
+    <div class="row g-3 mb-3">
+        <div class="col-12">
+            <div class="card shadow-none border  border-opacity-25">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="chart-title">
+                            Defaulters
+                            {% if defaulters_count %}
+                            <span class="badge bg-light text-dark border ms-1">{{ defaulters_count }}</span>
+                            {% endif %}
                         </div>
+                        <div class="chart-subtitle">Expired subscriptions not yet renewed</div>
+                    </div>
+                    <a href="{% url 'finance:member_list' %}?status=expired"
+                        class="btn btn-sm btn-outline-secondary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if defaulters %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Phone</th>
+                                    <th>Plan</th>
+                                    <th>Shift</th>
+                                    <th>Expired On</th>
+                                    <th>Overdue</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for member in defaulters %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-xs bg-light border text-dark fw-bold">
+                                                {{ member.user.first_name|first|default:member.user.email|first|upper }}
+                                            </div>
+                                            <strong>{{ member.user.get_full_name|default:member.user.email }}</strong>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small">{{ member.phone_number|default:member.user.phone_number|default:"—" }}</td>
+                                    <td class="small">{{ member.subscription_plan.name|default:"—" }}</td>
+                                    <td class="small">{{ member.shift.name|default:"—" }}</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">{{ member.subscription_end|date:"M d, Y"|default:"—" }}</span>
+                                    </td>
+                                    <td>
+                                        {% if member.subscription_end %}
+                                        <span class="text-dark fw-medium small">{{ member.subscription_end|timesince }} ago</span>
+                                        {% else %}—{% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'finance:member_detail' pk=member.pk %}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="bx bx-refresh me-1"></i>Renew
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bx bx-check-shield text-dark fs-1"></i>
+                        <p class="text-muted small mb-0 mt-2">No defaulters — all members are up to date!</p>
+                    </div>
                     {% endif %}
                 </div>
             </div>
@@ -334,220 +603,184 @@
     </div>
 
 </div>
-
-
 {% endblock %}
 
 {% block js-code %}
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Revenue vs Expenses Chart
-            const revenueCtx = document.getElementById('revenueChart');
-            if (revenueCtx) {
-                const revenueData = {{ chart_revenue_json|safe }};
-                const expensesData = {{ chart_expenses_json|safe }};
-                const labelsData = {{ chart_labels_json|safe }};
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
 
-                console.log('Revenue Data:', revenueData);
-                console.log('Expenses Data:', expensesData);
-                console.log('Labels Data:', labelsData);
+        const revenueData = {{ chart_revenue_json|safe }};
+    const expensesData = {{ chart_expenses_json| safe }};
+    const newMembersData = {{ chart_new_members_json| safe }};
+    const labelsData = {{ chart_labels_json| safe }};
 
-                if (labelsData.length > 0) {
-                    const revenueOptions = {
-                        series: [{
-                            name: 'Revenue (PKR)',
-                            data: revenueData
-                        }, {
-                            name: 'Expenses (PKR)',
-                            data: expensesData
-                        }],
-                        chart: {
-                            type: 'area',
-                            height: 350,
-                            toolbar: {
-                                show: false
-                            },
-                            animations: {
-                                enabled: true,
-                                speed: 800
-                            }
-                        },
-                        colors: ['#10b981', '#ef4444'],
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            curve: 'smooth',
-                            width: 3
-                        },
-                        xaxis: {
-                            categories: labelsData,
-                            labels: {
-                                style: {
-                                    colors: '#6c757d',
-                                    fontSize: '12px'
-                                }
-                            }
-                        },
-                        yaxis: {
-                            labels: {
-                                formatter: function (value) {
-                                    return 'PKR ' + value.toLocaleString();
-                                },
-                                style: {
-                                    colors: '#6c757d',
-                                    fontSize: '12px'
-                                }
-                            }
-                        },
-                        grid: {
-                            borderColor: '#e5e7eb',
-                            strokeDashArray: 4
-                        },
-                        fill: {
-                            type: 'gradient',
-                            gradient: {
-                                shadeIntensity: 1,
-                                opacityFrom: 0.4,
-                                opacityTo: 0.1,
-                                stops: [0, 90, 100]
-                            }
-                        },
-                        tooltip: {
-                            y: {
-                                formatter: function (value) {
-                                    return 'PKR ' + value.toLocaleString();
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'top',
-                            horizontalAlign: 'left',
-                            fontSize: '14px',
-                            markers: {
-                                width: 12,
-                                height: 12,
-                                radius: 2
+    /* ── 1. Revenue vs Expenses Area Chart ─────────────────────── */
+    const revenueEl = document.getElementById('revenueChart');
+    if (revenueEl && labelsData.length > 0) {
+        new ApexCharts(revenueEl, {
+            series: [
+                { name: 'Revenue', data: revenueData },
+                { name: 'Expenses', data: expensesData }
+            ],
+            chart: {
+                type: 'area',
+                height: 300,
+                toolbar: { show: false },
+                animations: { enabled: true, speed: 700 }
+            },
+            colors: ['#10b981', '#ef4444'],
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 2.5 },
+            fill: {
+                type: 'gradient',
+                gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] }
+            },
+            xaxis: {
+                categories: labelsData,
+                labels: { style: { colors: '#94a3b8', fontSize: '12px' } },
+                axisBorder: { show: false }, axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    formatter: v => 'PKR ' + v.toLocaleString(),
+                    style: { colors: '#94a3b8', fontSize: '11px' }
+                }
+            },
+            grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
+            legend: { show: false },
+            tooltip: {
+                y: { formatter: v => 'PKR ' + v.toLocaleString() }
+            }
+        }).render();
+    } else if (revenueEl) {
+        revenueEl.innerHTML = '<div class="text-center py-5 text-muted small">No data for the last 6 months</div>';
+    }
+
+    /* ── 2. Plan Distribution Donut ────────────────────────────── */
+    const planEl = document.getElementById('planChart');
+    {% if plan_distribution %}
+    const planData = [{% for p in plan_distribution %}{{ p.member_count }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const planLabels = [{% for p in plan_distribution %}"{{ p.name|escapejs }}"{% if not forloop.last %}, {% endif %} {% endfor %}];
+    if (planEl && planData.some(v => v > 0)) {
+        new ApexCharts(planEl, {
+            series: planData,
+            chart: {
+                type: 'donut',
+                height: 220,
+                animations: { enabled: true, speed: 700 }
+            },
+            labels: planLabels,
+            colors: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#ef4444'],
+            dataLabels: {
+                enabled: true,
+                formatter: v => v.toFixed(0) + '%',
+                style: { fontSize: '12px', fontWeight: '600', colors: ['#fff'] },
+                dropShadow: { enabled: false }
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '68%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true, label: 'Active', fontSize: '13px', color: '#64748b',
+                                formatter: w => w.globals.seriesTotals.reduce((a, b) => a + b, 0)
                             }
                         }
-                    };
-
-                    const revenueChart = new ApexCharts(revenueCtx, revenueOptions);
-                    revenueChart.render();
-                } else {
-                    revenueCtx.innerHTML = '<div class="text-center py-5 text-muted">No data available for the last 6 months</div>';
+                    }
                 }
-            } else {
-                console.error('Revenue chart element not found');
-            }
+            },
+            stroke: { width: 0 },
+            legend: { show: false },
+            tooltip: { y: { formatter: v => v + ' members' } }
+        }).render();
+    }
+    {% endif %}
 
-            // Plan Distribution Chart
-            const planCtx = document.getElementById('planChart');
-            if (planCtx) {
-                const planData = [
-                    {% for plan in plan_distribution %}
-                        {{ plan.member_count }}{% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                ];
-                const planLabels = [
-                    {% for plan in plan_distribution %}
-                        "{{ plan.name|escapejs }}"{% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                ];
-
-                console.log('Plan Data:', planData);
-                console.log('Plan Labels:', planLabels);
-
-                if (planData.length > 0 && planData.some(val => val > 0)) {
-                    const planOptions = {
-                        series: planData,
-                        chart: {
-                            type: 'donut',
-                            height: 280,
-                            animations: {
-                                enabled: true,
-                                speed: 800
-                            }
-                        },
-                        labels: planLabels,
-                        colors: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#ef4444'],
-                        dataLabels: {
-                            enabled: true,
-                            formatter: function (val) {
-                                return val.toFixed(0) + '%';
-                            },
-                            style: {
-                                fontSize: '14px',
-                                fontWeight: 'bold',
-                                colors: ['#fff']
-                            },
-                            dropShadow: {
-                                enabled: true,
-                                top: 1,
-                                left: 1,
-                                blur: 1,
-                                opacity: 0.45
-                            }
-                        },
-                        legend: {
-                            show: false
-                        },
-                        plotOptions: {
-                            pie: {
-                                donut: {
-                                    size: '70%',
-                                    labels: {
-                                        show: true,
-                                        name: {
-                                            show: true,
-                                            fontSize: '16px',
-                                            color: '#6c757d'
-                                        },
-                                        value: {
-                                            show: true,
-                                            fontSize: '24px',
-                                            fontWeight: 'bold',
-                                            color: '#1f2937',
-                                            formatter: function (val) {
-                                                return val;
-                                            }
-                                        },
-                                        total: {
-                                            show: true,
-                                            label: 'Total Members',
-                                            fontSize: '14px',
-                                            color: '#6c757d',
-                                            formatter: function (w) {
-                                                return w.globals.seriesTotals.reduce((a, b) => {
-                                                    return a + b;
-                                                }, 0);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        stroke: {
-                            width: 0
-                        },
-                        tooltip: {
-                            y: {
-                                formatter: function (value) {
-                                    return value + ' members';
-                                }
-                            }
-                        }
-                    };
-
-                    const planChart = new ApexCharts(planCtx, planOptions);
-                    planChart.render();
-                } else {
-                    console.log('No plan data available or all plans have 0 members');
+    /* ── 3. New Members Bar Chart ───────────────────────────────── */
+    const membersEl = document.getElementById('membersChart');
+    if (membersEl && labelsData.length > 0) {
+        new ApexCharts(membersEl, {
+            series: [{ name: 'New Members', data: newMembersData }],
+            chart: {
+                type: 'bar',
+                height: 280,
+                toolbar: { show: false },
+                animations: { enabled: true, speed: 700 }
+            },
+            colors: ['#6366f1'],
+            plotOptions: {
+                bar: {
+                    borderRadius: 6,
+                    columnWidth: '50%',
+                    dataLabels: { position: 'top' }
                 }
-            } else {
-                console.error('Plan chart element not found');
-            }
-        });
-    </script>
+            },
+            dataLabels: {
+                enabled: true,
+                offsetY: -20,
+                style: { fontSize: '11px', colors: ['#475569'] }
+            },
+            xaxis: {
+                categories: labelsData,
+                labels: { style: { colors: '#94a3b8', fontSize: '12px' } },
+                axisBorder: { show: false }, axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    formatter: v => Math.round(v),
+                    style: { colors: '#94a3b8', fontSize: '11px' }
+                }
+            },
+            grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
+            tooltip: { y: { formatter: v => v + ' members' } }
+        }).render();
+    } else if (membersEl) {
+        membersEl.innerHTML = '<div class="text-center py-5 text-muted small">No enrollment data available</div>';
+    }
+
+    /* ── 4. Payment Methods Horizontal Bar ─────────────────────── */
+    const methodEl = document.getElementById('methodChart');
+    {% if payment_methods %}
+    const methodLabels = [{% for m in payment_methods %}"{{ m.payment_method|upper|escapejs }}"{% if not forloop.last %}, {% endif %} {% endfor %}];
+    const methodCounts = [{% for m in payment_methods %}{{ m.count }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+    if (methodEl && methodLabels.length > 0) {
+        new ApexCharts(methodEl, {
+            series: [{ name: 'Transactions', data: methodCounts }],
+            chart: {
+                type: 'bar',
+                height: 180,
+                toolbar: { show: false },
+                animations: { enabled: true, speed: 700 }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    borderRadius: 4,
+                    barHeight: '55%',
+                    distributed: true
+                }
+            },
+            colors: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'],
+            dataLabels: {
+                enabled: true,
+                style: { fontSize: '11px', colors: ['#fff'] }
+            },
+            xaxis: {
+                categories: methodLabels,
+                labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
+                axisBorder: { show: false }, axisTicks: { show: false }
+            },
+            yaxis: { labels: { style: { colors: '#475569', fontSize: '12px', fontWeight: '600' } } },
+            grid: { show: false },
+            legend: { show: false },
+            tooltip: { y: { formatter: v => v + ' transaction(s)' } }
+        }).render();
+    }
+    {% endif %}
+
+});
+</script>
 {% endblock %}

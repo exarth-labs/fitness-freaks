@@ -17,7 +17,7 @@ from django.utils.translation import gettext, gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
-from .models import User, UserType
+from .models import User, UserType, Instructor
 
 
 csrf_protect_m = method_decorator(csrf_protect)
@@ -214,6 +214,16 @@ class UserCustomAdmin(admin.ModelAdmin):
 # Register User with custom admin
 admin.site.register(User, UserCustomAdmin)
 
-admin.site.site_header = "Root Administration"
-admin.site.site_title = "Root Admin"
-admin.site.index_title = "Root Management"
+
+@admin.register(Instructor)
+class InstructorAdmin(admin.ModelAdmin):
+    list_display = ['user', 'specialization', 'hire_date', 'is_active', 'created_on']
+    list_filter = ['is_active', 'specialization']
+    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'specialization']
+    raw_id_fields = ['user']
+    ordering = ['-created_on']
+
+
+admin.site.site_header = "Fitness Freaks Administration"
+admin.site.site_title = "Fitness Freaks Admin"
+admin.site.index_title = "Gym Management"

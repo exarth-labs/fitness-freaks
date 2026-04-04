@@ -2,7 +2,17 @@ from django import forms
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import SubscriptionPlan, Member, Payment, Expense
+from .models import SubscriptionPlan, GymShift, Member, Payment, Expense
+
+
+class GymShiftForm(forms.ModelForm):
+    class Meta:
+        model = GymShift
+        fields = ['name', 'gender', 'start_time', 'end_time', 'is_active']
+        widgets = {
+            'start_time': forms.TimeInput(attrs={'type': 'time'}),
+            'end_time': forms.TimeInput(attrs={'type': 'time'}),
+        }
 
 
 class SubscriptionPlanForm(forms.ModelForm):
@@ -22,7 +32,8 @@ class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = [
-            'user', 'subscription_plan',
+            'user', 'gender', 'phone_number', 'shift', 'instructor',
+            'subscription_plan',
             'cnic', 'emergency_contact_name', 'emergency_contact_phone',
             'blood_group', 'health_conditions', 'weight', 'height',
             'subscription_start', 'subscription_end', 'status',
@@ -42,7 +53,8 @@ class MemberQuickAddForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = [
-            'user', 'subscription_plan', 'cnic',
+            'user', 'gender', 'phone_number', 'shift',
+            'subscription_plan', 'cnic',
             'emergency_contact_name', 'emergency_contact_phone',
             'blood_group', 'notes'
         ]

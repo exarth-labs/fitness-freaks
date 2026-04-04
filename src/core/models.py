@@ -73,8 +73,8 @@ def protocol_validator(value):
 
 
 class Application(models.Model):
-    name = models.CharField(max_length=100, help_text='Application name', default='Exarth')
-    short_name = models.CharField(max_length=10, help_text='Your application short name', default='EX')
+    name = models.CharField(max_length=100, help_text='Application name', default='Fitness Freaks')
+    short_name = models.CharField(max_length=10, help_text='Your application short name', default='FF')
     tagline = models.CharField(
         max_length=100, help_text='Your application business line', default='Your digital partner'
     )
@@ -98,10 +98,10 @@ class Application(models.Model):
     )
 
     contact_email1 = models.EmailField(
-        max_length=100, default='support@exarth.com', help_text='Application contact email 1'
+        max_length=100, default='support@fitnessfreaks.com', help_text='Application contact email 1'
     )
     contact_email2 = models.EmailField(
-        max_length=100, default='support@exarth.com', help_text='Application contact email 2'
+        max_length=100, default='support@fitnessfreaks.com', help_text='Application contact email 2'
     )
     contact_phone1 = PhoneNumberField(
         help_text='Application contact phone 1', default='+923419387283'
@@ -117,7 +117,7 @@ class Application(models.Model):
     longitude = models.DecimalField(max_digits=10, decimal_places=6, help_text='longitude', default=90.3)
 
     terms_url = models.URLField(
-        max_length=255, default='https://exarth.com/terms-of-use/', help_text='Terms and Conditions page link'
+        max_length=255, default='https://fitnessfreaks.com/terms-of-use/', help_text='Terms and Conditions page link'
     )
 
     version = models.CharField(max_length=10, help_text='Current version', default='1.0.0')

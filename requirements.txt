@@ -13,8 +13,6 @@ django-allauth
 django-resized
 python-decouple
 django-crispy-forms
-djangorestframework
-dj-rest-auth
 requests
 
 crispy-bootstrap5

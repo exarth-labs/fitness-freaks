@@ -29,7 +29,7 @@
     --vz-gray-700: #495057;
     --vz-gray-800: #343a40;
     --vz-gray-900: #212529;
-    --vz-primary: #03045e;
+    --vz-primary: #ffa200;
     --vz-secondary: #7084c7;
     --vz-success: #6ada7d;
     --vz-info: #58caea;
@@ -37,15 +37,15 @@
     --vz-danger: #fa896b;
     --vz-light: #f3f6f9;
     --vz-dark: #212529;
-    --vz-primary-rgb: 2,62,138;
-    --vz-secondary-rgb: 2,62,138;
+    --vz-primary-rgb: 255,162,0;
+    --vz-secondary-rgb: 255,162,0;
     --vz-success-rgb: 106, 218, 125;
-    --vz-info-rgb: 2,62,138;
+    --vz-info-rgb: 255,162,0;
     --vz-warning-rgb: 247, 184, 75;
     --vz-danger-rgb: 250, 137, 107;
     --vz-light-rgb: 243, 246, 249;
     --vz-dark-rgb: 33, 37, 41;
-    --vz-primary-text-emphasis: #023e8a;
+    --vz-primary-text-emphasis: #cc8200;
     --vz-secondary-text-emphasis: #5f70a9;
     --vz-success-text-emphasis: #5ab96a;
     --vz-info-text-emphasis: #4bacc7;
@@ -53,7 +53,7 @@
     --vz-danger-text-emphasis: #d5745b;
     --vz-light-text-emphasis: #ced4da;
     --vz-dark-text-emphasis: #343a40;
-    --vz-primary-bg-subtle: #e7f1f7;
+    --vz-primary-bg-subtle: #fff0cc;
     --vz-secondary-bg-subtle: #eaedf7;
     --vz-success-bg-subtle: #e9f9ec;
     --vz-info-bg-subtle: #e6f7fc;
@@ -61,7 +61,7 @@
     --vz-danger-bg-subtle: #feede9;
     --vz-light-bg-subtle: #f9fbfc;
     --vz-dark-bg-subtle: #e9ebec;
-    --vz-primary-border-subtle: #bfdaea;
+    --vz-primary-border-subtle: #ffcc66;
     --vz-secondary-border-subtle: #c6cee9;
     --vz-success-border-subtle: #c3f0cb;
     --vz-info-border-subtle: #bceaf7;
@@ -94,7 +94,7 @@
     --vz-tertiary-bg-rgb: 239, 242, 247;
     --vz-heading-color: #495057;
     --vz-link-color: #5ea3cb;
-    --vz-link-color-rgb: 2,62,138;
+    --vz-link-color-rgb: 255,162,0;
     --vz-link-decoration: none;
     --vz-link-hover-color: #5ea3cb;
     --vz-link-hover-color-rgb: 94, 163, 203;
@@ -140,7 +140,7 @@
     --vz-tertiary-color-rgb: 206, 212, 218;
     --vz-tertiary-bg: #2a2d31;
     --vz-tertiary-bg-rgb: 42, 45, 49;
-    --vz-primary-text-emphasis: #7eb5d5;
+    --vz-primary-text-emphasis: #ffcc66;
     --vz-secondary-text-emphasis: #8d9dd2;
     --vz-success-text-emphasis: #88e197;
     --vz-info-text-emphasis: #79d5ee;
@@ -156,7 +156,7 @@
     --vz-danger-bg-subtle: rgba(250, 137, 107, 0.15);
     --vz-light-bg-subtle: #25282c;
     --vz-dark-bg-subtle: #313437;
-    --vz-primary-border-subtle: #3d6a84;
+    --vz-primary-border-subtle: #cc8200;
     --vz-secondary-border-subtle: #384264;
     --vz-success-border-subtle: #356d3f;
     --vz-info-border-subtle: #2c6575;
@@ -5554,8 +5554,8 @@ textarea.form-control-lg {
     --vz-pagination-focus-bg: var(--vz-tertiary-bg);
     --vz-pagination-focus-box-shadow: 0 0 1 0.25rem rgba(var(--vz-primary-rgb), 0.25);
     --vz-pagination-active-color: #fff;
-    --vz-pagination-active-bg: #023e8a;
-    --vz-pagination-active-border-color: #023e8a;
+    --vz-pagination-active-bg: #cc8200;
+    --vz-pagination-active-border-color: #cc8200;
     --vz-pagination-disabled-color: var(--vz-secondary-color);
     --vz-pagination-disabled-bg: var(--vz-secondary-bg);
     --vz-pagination-disabled-border-color: var(--vz-border-color);

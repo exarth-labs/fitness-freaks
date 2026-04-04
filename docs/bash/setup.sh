@@ -1,8 +1,8 @@
 #!/bin/bash
 # =============================================================================
-# EXARTH COMPANY SITE - Initial Setup Script
+# FITNESS FREAKS - Initial Setup Script
 # =============================================================================
-# Description: Complete project setup including venv, dependencies, migrations
+# Description: Complete project setup including .venv, dependencies, migrations
 # Usage: ./docs/bash/setup.sh (from any directory)
 # =============================================================================
 
@@ -17,14 +17,14 @@ echo "📁 Working in: $PROJECT_ROOT"
 
 echo ""
 echo "=========================================="
-echo "   EXARTH COMPANY SITE - INITIAL SETUP"
+echo "   FITNESS FREAKS - INITIAL SETUP"
 echo "=========================================="
 echo ""
 
 # Step 1: Create virtual environment
 echo "🔧 Step 1: Creating virtual environment..."
-if [ ! -d "venv" ]; then
-    python3 -m venv venv
+if [ ! -d ".venv" ]; then
+    python3 -m venv .venv
     echo "   ✅ Virtual environment created"
 else
     echo "   ⏭️  Virtual environment already exists"
@@ -32,7 +32,7 @@ fi
 
 # Step 2: Activate virtual environment
 echo "🔧 Step 2: Activating virtual environment..."
-source venv/bin/activate
+source .venv/bin/activate
 echo "   ✅ Virtual environment activated"
 
 # Step 3: Install requirements
@@ -70,27 +70,7 @@ echo ""
 read -p "🔧 Step 8: Do you want to create a superuser? (y/N): " create_superuser
 
 if [[ "$create_superuser" == "y" || "$create_superuser" == "Y" ]]; then
-    echo ""
-    echo "Default credentials: email=admin@example.com, username=admin, password=admin"
-    read -p "   Use default credentials? (Y/n): " use_default
-
-    if [[ "$use_default" == "n" || "$use_default" == "N" ]]; then
-        python manage.py createsuperuser
-    else
-        python manage.py shell << EOF
-from django.contrib.auth import get_user_model
-User = get_user_model()
-if not User.objects.filter(email='admin@example.com').exists():
-    User.objects.create_superuser(
-        email='admin@example.com',
-        username='admin',
-        password='admin'
-    )
-    print('   ✅ Superuser created successfully!')
-else:
-    print('   ⏭️  Superuser with this email already exists.')
-EOF
-    fi
+    python manage.py createsuperuser
 else
     echo "   ⏭️  Skipping superuser creation"
 fi
@@ -101,6 +81,9 @@ echo "   ✅ SETUP COMPLETE!"
 echo "=========================================="
 echo ""
 echo "To start the server, run:"
-echo "  source venv/bin/activate"
+echo "  source .venv/bin/activate"
 echo "  python manage.py runserver"
+echo ""
+echo "To seed fake data:"
+echo "  python manage.py adddata"
 echo ""

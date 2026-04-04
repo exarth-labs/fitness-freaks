@@ -1,227 +1,126 @@
-# Django Boilerplate
+# Fitness Freaks — Gym Management System
 
-A production-ready Django boilerplate with authentication, REST API, and modern tooling.
-
-## ✨ Features
-
-- 🔐 **Authentication**: django-allauth with social login (Google), MFA support
-- 🔄 **REST API**: Django REST Framework with dj-rest-auth
-- 📝 **Forms**: Crispy Forms with Bootstrap 5
-- 📧 **Email**: Mailchimp Transactional (Mandrill) integration
-- 📱 **Phone**: Phone number field support
-- 🔍 **Filtering**: Django Filter for querysets
-- 📖 **API Docs**: Swagger/OpenAPI via drf-yasg
+A Django-based gym management system for tracking members, subscriptions, payments, and expenses. Built for a single gym in Pakistan.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### Prerequisites
-
-- Python 3.10+
-- pip (Python package manager)
-- Git
-
-### Installation
-
-#### Option 1: Using Setup Script (Recommended)
+### Option 1: Setup Script
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd boilerplate-django
-
-# Run the setup script
-chmod +x docs/bash/setup.sh
-./docs/bash/setup.sh
+chmod +x docs/bash/setup.sh && ./docs/bash/setup.sh
 ```
 
-#### Option 2: Manual Installation
+### Option 2: Manual
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd boilerplate-django
-
-# Create virtual environment
-python3 -m venv venv
-
-# Activate virtual environment
-source venv/bin/activate  # On macOS/Linux
-# venv\Scripts\activate   # On Windows
-
-# Install dependencies
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-
-# Copy environment file
-cp docs/configs/.env .env
-
-# Run migrations
+cp docs/configs/.env .env          # then fill in values
+python manage.py makemigrations accounts core finance whisper
 python manage.py migrate
-
-# Collect static files
-python manage.py collectstatic --noinput
-
-# Create superuser
 python manage.py createsuperuser
-
-# Run the development server
 python manage.py runserver
 ```
 
----
-
-## 📁 Project Structure
-
-```
-boilerplate-django/
-├── root/                   # Django project settings
-│   ├── settings.py         # Main settings file
-│   ├── urls.py             # Root URL configuration
-│   └── wsgi.py             # WSGI configuration
-├── src/                    # Application modules
-│   ├── core/               # Core app (models, helpers, signals)
-│   ├── services/           # Backend services
-│   │   ├── accounts/       # User accounts & authentication
-│   │   └── dashboard/      # Dashboard functionality
-│   └── web/                # Frontend web apps
-│       └── website/        # Public website
-├── templates/              # HTML templates
-├── static/                 # Static assets (CSS, JS, images)
-├── media/                  # User-uploaded files
-├── docs/                   # Documentation & scripts
-│   ├── bash/               # Bash utility scripts
-│   └── configs/            # Configuration templates
-└── manage.py               # Django management script
-```
+Default dev login: `mark@exarth.com` / `mark` — admin at `/admin/`
 
 ---
 
-## 🔧 Configuration
+## Environment Variables (`.env`)
 
-### Environment Variables
-
-The project uses `django-environ` for environment variable management. Create a `.env` file in the project root:
-
-```bash
-cp docs/configs/.env.example .env
-```
-
-Key environment variables:
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DEBUG` | Enable debug mode | `True` |
-| `SECRET_KEY` | Django secret key | Required |
-| `ENVIRONMENT` | Environment type (`local`/`server`) | `local` |
-| `DOMAIN` | Site domain | `localhost:8000` |
-| `PROTOCOL` | HTTP or HTTPS | `http` |
-| `ALLOWED_HOSTS` | Comma-separated list of hosts | `localhost,127.0.0.1` |
-| `SITE_ID` | Django site ID | `1` |
-| `DB_*` | Database configuration | SQLite (local) |
+| Variable | Description |
+|---|---|
+| `DEBUG` | `True` / `False` |
+| `SECRET_KEY` | Django secret key |
+| `ENVIRONMENT` | `local` (SQLite) or `server` (PostgreSQL) |
+| `DOMAIN` | e.g. `localhost:8000` |
+| `PROTOCOL` | `http` or `https` |
+| `ALLOWED_HOSTS` | Comma-separated hosts |
+| `SITE_ID` | Django site ID (usually `1`) |
+| `TIME_ZONE` | e.g. `Asia/Karachi` |
+| `DB_*` | PostgreSQL config (server only) |
+| `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | SMTP config |
+| `DEFAULT_FROM_EMAIL` | Sender address |
+| `MAILCHIMP_API_KEY` / `MAILCHIMP_FROM_EMAIL` | Mailchimp Transactional |
 
 ---
 
-## 📜 Bash Scripts
+## Management Commands
 
-All scripts are located in `docs/bash/` and can be run from any directory:
+### Development Data
 
 ```bash
-# Make scripts executable (first time only)
-chmod +x docs/bash/*.sh
+# Seed with fake data (default: 50 members, 120 payments, 60 expenses, 5 instructors)
+python manage.py adddata
+
+# Customise counts
+python manage.py adddata --members 100 --payments 200 --expenses 80 --instructors 8
 ```
 
-| Script | Description |
-|--------|-------------|
-| `setup.sh` | Complete project setup (venv, deps, migrations, static) |
-| `migrations.sh` | Run migrations for all apps |
-| `migrations_clean.sh` | Clean all migration files (with confirmation) |
-| `requirements.sh` | Install/update Python dependencies |
-| `static.sh` | Collect static files |
-| `superuser.sh` | Create admin superuser |
-
----
+Seeded users get password `password123`.
 
 ```bash
-# Generate fake data
-bash docs/bash/faker.sh
+# Clean all data, keep first superuser, keep shifts & plans
+python manage.py cleandata
 
-# Clear existing data and regenerate
-bash docs/bash/faker.sh --clear
+# Also wipe shifts and subscription plans
+python manage.py cleandata --all
 
-# Or run Python directly
-python docs/bash/generate_fake_data.py
-python docs/bash/generate_fake_data.py --clear
+# Skip confirmation prompt
+python manage.py cleandata --yes
+python manage.py cleandata --yes --all
 ```
 
-## 🗄️ Database Migrations
-
-### Run migrations for all apps:
+### Notifications
 
 ```bash
-./docs/bash/migrations.sh
+# Send expiry reminder emails (members expiring within 7 days)
+python manage.py send_expiry_reminders
+
+# Recommended cron (runs daily at 9 AM)
+# 0 9 * * * python manage.py send_expiry_reminders
 ```
 
-### Or manually:
+### Standard Django
 
 ```bash
-python manage.py makemigrations accounts management finance whisper
+python manage.py makemigrations accounts core finance whisper
 python manage.py migrate
-```
-
-### Clean migrations (fresh start):
-
-```bash
-./docs/bash/migrations_clean.sh
-```
-
----
-
-## 👤 Admin Access
-
-### Create superuser:
-
-```bash
-./docs/bash/superuser.sh
-```
-
-Default credentials (for development):
-- **Email:** mark@exarth.com
-- **Username:** mark
-- **Password:** mark
-
-Access admin panel at: `http://localhost:8000/admin/`
-
----
-
-## 🖥️ Running the Server
-
-### Development:
-
-```bash
+python manage.py collectstatic
+python manage.py createsuperuser
 python manage.py runserver
-```
-
-### With specific port:
-
-```bash
-python manage.py runserver 0.0.0.0:8080
+python manage.py shell
 ```
 
 ---
 
-## 📦 Apps Overview
+## Bash Scripts (`docs/bash/`)
+
+```bash
+chmod +x docs/bash/*.sh    # first time only
+
+./docs/bash/setup.sh                # full project setup
+./docs/bash/superuser.sh            # create superuser
+./docs/bash/migrations_clean.sh     # wipe all migration files
+./docs/bash/faker.sh                # legacy fake data script
+```
+
+---
+
+## Apps
 
 | App | Path | Description |
-|-----|------|-------------|
-| `company` | `src/services/company/` | Company info, team, about pages |
-| `projects` | `src/services/projects/` | Portfolio and project showcase |
-| `resources` | `src/services/resources/` | Resources and downloads |
-| `services` | `src/services/services/` | Service offerings |
-| `website` | `src/website/` | Main website, homepage, contact |
+|---|---|---|
+| `core` | `src/core/` | Shared mixins, template tags, base models |
+| `accounts` | `src/services/accounts/` | Users, Instructors |
+| `finance` | `src/services/finance/` | Plans, Members, Payments, Expenses, Shifts |
+| `dashboard` | `src/services/dashboard/` | Analytics, stats, charts |
+| `whisper` | `src/apps/whisper/` | Internal email/notification system |
 
 ---
 
-## 📄 License
+## License
 
-This project is proprietary software owned by Exarth Corporation. All rights reserved.
+Proprietary — Exarth Corporation. All rights reserved.

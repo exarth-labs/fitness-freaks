@@ -3,7 +3,6 @@
         <div class="user-form-remind">
             <p>
                 Go To  <a href="{% url 'accounts:cross-auth' %}"><i class="fa fa-user-circle"></i> Dashboard  </a>
-                - <a href="/"><i class="fa fa-home"></i>  Home  </a>
             </p>
         </div>
     {% else %}
@@ -15,14 +14,12 @@
                     <a href="{% url 'account_signup' %}">
                         <i class="fa fa-door-open"></i> Signup
                     </a>
-                    -<a href="/"><i class="fa fa-home"></i> Home</a>
                 </p>
             </div>
         {% else %}
             <div class="user-form-remind">
                 <p>
                     Go Back To<a href="{% url 'account_login' %}"><i class="fa fa-door-open"></i> login</a>
-                    -<a href="/"><i class="fa fa-home"></i> Home</a>
                 </p>
             </div>
         {% endif %}

@@ -1,4 +1,3 @@
-import datetime
 from pathlib import Path
 import environ
 
@@ -20,11 +19,14 @@ DOMAIN = env('DOMAIN')
 PROTOCOL = env('PROTOCOL')
 BASE_URL = f"{PROTOCOL}://{DOMAIN}"
 ALLOWED_HOSTS = str(env('ALLOWED_HOSTS')).split(',')
-CSRF_TRUSTED_ORIGINS = [f'{PROTOCOL}://{host}' for host in ALLOWED_HOSTS]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost',
+    'http://127.0.0.1',
+]
 LOGOUT_REDIRECT_URL = '/accounts/cross-auth/'
 LOGIN_REDIRECT_URL = '/accounts/cross-auth/'
-GOOGLE_CALLBACK_ADDRESS = f"{BASE_URL}/accounts/google/login/callback/"
-APPLE_CALLBACK_ADDRESS = f"{BASE_URL}/accounts/apple/login/callback/"
 
 ROOT_URLCONF = 'root.urls'
 AUTH_USER_MODEL = 'accounts.User'
@@ -47,19 +49,11 @@ INSTALLED_APPS = [
     'django_filters',
     'phonenumber_field',
     'widget_tweaks',
+    'corsheaders',
 
     # WEB APPS
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-
-    # REST APPS
-    'rest_framework',
-    'rest_framework.authtoken',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
-    'drf_yasg',
 
     # OTHER APPS
     'src.apps.whisper.apps.WhisperConfig',
@@ -69,8 +63,7 @@ INSTALLED_APPS = [
     'src.services.accounts.apps.AccountsConfig',
     'src.services.dashboard.apps.DashboardConfig',
     'src.services.finance.apps.FinanceConfig',
-    'src.website.apps.WebsiteConfig',
-    'src.services.management.apps.ManagementConfig',
+    'src.services.website.apps.WebsiteConfig',
 
     # mailchimp
     'mailchimp_transactional',
@@ -80,15 +73,15 @@ MIDDLEWARE = [
     # DJANGO MIDDLEWARES
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
 
     # YOUR MIDDLEWARES
-    # "allauth.account.middleware.AccountMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -99,9 +92,9 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
-CORS_ALLOW_ALL_ORIGINS = False  # Only for development - remove in production
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development - remove in production
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS + ['http://localhost:8000', 'http://127.0.0.1:8000']
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -181,7 +174,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = env('TIME_ZONE')
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 """ EMAIL CONFIGURATION ------------------------------------------------------------------------------ """
@@ -222,14 +214,26 @@ DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
 
 """ ALL-AUTH SETUP --------------------------------------------------------------------------------  """
 ACCOUNT_LOGOUT_ON_GET = True
-SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_LOGIN_METHODS = ['email']
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
 OLD_PASSWORD_FIELD_ENABLED = True
 LOGOUT_ON_PASSWORD_CHANGE = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_SIGNUP_ENABLED = False
+
+""" SECURITY (production only) --------------------------------------------------------------------- """
+
+if ENVIRONMENT == 'server':
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000        # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
 
 """ DEBUGGING TOOLS ------------------------------------------------------------------------------- """
 

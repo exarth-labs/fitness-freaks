@@ -6,6 +6,8 @@ from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Div, HTML
 
+from .models import Instructor
+
 
 class UserCreateForm(UserCreationForm):
 
@@ -27,7 +29,7 @@ class UserCreateForm(UserCreationForm):
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "Marcus"}),
             "last_name": forms.TextInput(attrs={"placeholder": "Merlin"}),
-            "email": forms.EmailInput(attrs={"placeholder": "admin@exarth.com"}),
+            "email": forms.EmailInput(attrs={"placeholder": "admin@fitnessfreaks.com"}),
             "username": forms.TextInput(attrs={"placeholder": "admin"}),
             "password1": forms.PasswordInput(attrs={"placeholder": "Password"}),
             "password2": forms.PasswordInput(attrs={"placeholder": "Confirm Password"}),
@@ -84,7 +86,7 @@ class UserUpdateForm(ModelForm):
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "Marcus"}),
             "last_name": forms.TextInput(attrs={"placeholder": "Merlin"}),
-            "email": forms.EmailInput(attrs={"placeholder": "admin@exarth.com"}),
+            "email": forms.EmailInput(attrs={"placeholder": "admin@fitnessfreaks.com"}),
             "username": forms.TextInput(attrs={"placeholder": "admin"}),
         }
 
@@ -137,5 +139,31 @@ class GroupForm(ModelForm):
     class Meta:
         model = Group
         fields = "__all__"
+
+
+class InstructorForm(ModelForm):
+    class Meta:
+        model = Instructor
+        fields = ['user', 'specialization', 'hire_date', 'bio', 'is_active']
+        widgets = {
+            'bio': forms.Textarea(attrs={'rows': 3}),
+            'hire_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                Column('user', css_class='form-group col-md-6 mb-0'),
+                Column('specialization', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('hire_date', css_class='form-group col-md-4 mb-0'),
+                Column('is_active', css_class='form-group col-md-4 mb-0'),
+            ),
+            'bio',
+        )
 
 

@@ -315,9 +315,11 @@
                                                             </div>
                                                             <div class="ms-3">
                                                                 {% for perm in permission.permissions.all %}
-                                                                    <span class="badge bg-light text-dark border small me-1 mb-1">
-                                            {{ perm.content_type }}: {{ perm.name }}
-                                        </span>
+                                                                    {% if perm.content_type.app_label in 'accounts,finance,core,whisper,auth' %}
+                                                                        <span class="badge bg-light text-dark border small me-1 mb-1">
+                                                                            {{ perm.content_type }}: {{ perm.name }}
+                                                                        </span>
+                                                                    {% endif %}
                                                                 {% endfor %}
                                                             </div>
                                                         </div>

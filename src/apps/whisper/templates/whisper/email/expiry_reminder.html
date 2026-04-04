@@ -1,0 +1,53 @@
+{% extends 'whisper/base.html' %}
+
+{% block content %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border: none;">
+    <tr>
+        <td style="padding: 32px 0 12px 0;">
+            <h2 style="margin: 0 0 8px 0; color: #1f2937; font-size: 1.4rem; font-weight: 700;">
+                Subscription Expiring Soon
+            </h2>
+            <p style="margin: 0; color: #6b7a99; font-size: 0.95rem;">
+                Hi {{ member_name }}, your gym membership is expiring soon.
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 16px 0;">
+            <table role="presentation" width="100%" cellpadding="12" cellspacing="0"
+                   style="background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca;">
+                <tr>
+                    <td>
+                        <p style="margin: 0 0 8px 0; color: #991b1b; font-weight: 600; font-size: 1rem;">
+                            &#9888; Your subscription expires on {{ expiry_date }}
+                        </p>
+                        <p style="margin: 0; color: #7f1d1d; font-size: 0.9rem;">
+                            Only <strong>{{ days_remaining }} day(s)</strong> remaining.
+                            Please renew your membership to continue using the gym.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 8px 0 16px 0;">
+            <table role="presentation" width="100%" cellpadding="10" cellspacing="0"
+                   style="background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <tr>
+                    <td style="color: #374151; font-size: 0.9rem;">
+                        <strong>Plan:</strong> {{ plan_name }}<br>
+                        <strong>Shift:</strong> {{ shift_name }}<br>
+                        <strong>Expires:</strong> {{ expiry_date }}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 8px 0 24px 0; color: #6b7280; font-size: 0.9rem;">
+            To renew your membership, please visit the gym or contact us directly.
+        </td>
+    </tr>
+</table>
+{% endblock %}
