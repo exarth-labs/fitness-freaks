@@ -236,11 +236,3 @@ if ENVIRONMENT == 'server':
     X_FRAME_OPTIONS = 'DENY'
 
 """ DEBUGGING TOOLS ------------------------------------------------------------------------------- """
-
-# if ENVIRONMENT != 'server':
-#     INSTALLED_APPS += [
-#         'django_browser_reload'
-#     ]
-#     MIDDLEWARE += [
-#         'django_browser_reload.middleware.BrowserReloadMiddleware'
-#     ]
