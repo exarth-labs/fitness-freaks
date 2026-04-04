@@ -24,7 +24,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://localhost',
     'http://127.0.0.1',
+    f'{PROTOCOL}://{DOMAIN}',
 ]
+CSRF_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
+CORS_ORIGINS_WHITELIST = CSRF_TRUSTED_ORIGINS
+
 LOGOUT_REDIRECT_URL = '/accounts/cross-auth/'
 LOGIN_REDIRECT_URL = '/accounts/cross-auth/'
 
@@ -72,8 +76,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # DJANGO MIDDLEWARES
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -92,9 +96,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True  # Only for development - remove in production
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS + ['http://localhost:8000', 'http://127.0.0.1:8000']
+CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
