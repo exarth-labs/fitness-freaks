@@ -22,9 +22,15 @@
             
             <!-- CTA Button -->
             <div class="hidden lg:block">
-                <a href="/accounts/login/" class="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-primary to-primary-dark text-black font-semibold uppercase tracking-wide rounded-full hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 text-sm">
+                <a href="/accounts/cross-auth/" class="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-primary to-primary-dark text-black font-semibold uppercase tracking-wide rounded-full hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 text-sm">
                     <i class="fas fa-sign-in-alt text-sm"></i>
-                    <span>Login</span>
+                    <span>
+                        {% if user.is_authenticated %}
+                            Dashboard
+                        {% else %}
+                            Login
+                        {% endif %}
+                    </span>
                 </a>
             </div>
             
@@ -49,7 +55,7 @@
             <a href="#contact" class="text-2xl font-heading hover:text-primary transition-colors">CONTACT</a>
             <a href="/accounts/login/" class="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-black font-semibold uppercase tracking-wide rounded-full mt-8">
                 <i class="fas fa-sign-in-alt"></i>
-                <span>Member Login</span>
+                <span>Login</span>
             </a>
         </div>
     </div>
