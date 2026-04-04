@@ -8,10 +8,15 @@
 {% block css_down %}
 <style>
     .kpi-card {
-        border: none;
         border-radius: 12px;
         overflow: hidden;
         position: relative;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .08) !important;
     }
 
     .kpi-card .kpi-icon {
@@ -23,19 +28,6 @@
         justify-content: center;
         font-size: 1.5rem;
     }
-
-    .stat-card {
-        border-radius: 8px;
-        transition: transform 0.15s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, .08) !important;
-    }
-
-
-
 
 
 
@@ -85,19 +77,6 @@
         padding: .25em .6em;
         border-radius: 20px;
         font-weight: 600;
-    }
-
-    .active-rate-bar {
-        height: 6px;
-        border-radius: 3px;
-        background: #e2e8f0;
-        overflow: hidden;
-    }
-
-    .active-rate-bar .fill {
-        height: 100%;
-        background: linear-gradient(90deg, #10b981, #34d399);
-        border-radius: 3px;
     }
 
     .table th {
@@ -219,11 +198,6 @@
                         <div class="today-stat-label">Defaulters</div>
                         <div class="today-stat-value">{{ defaulters_count|intcomma }}</div>
                     </div>
-                    <div class="divider d-none d-sm-block"></div>
-                    <div class="ms-auto text-end d-none d-md-block">
-                        <div class="today-stat-label">Active Rate</div>
-                        <div class="today-stat-value">{{ active_rate }}%</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -241,7 +215,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-muted small mb-1 fw-medium">Year Revenue</p>
+                            <p class="text-muted small mb-1 fw-medium">Year Revenue <span class="badge bg-light text-muted border fw-normal" style="font-size:.65rem;vertical-align:middle;">Yearly</span></p>
                             <h3 class="fw-bold text-dark mb-0">PKR {{ revenue_year|intcomma }}</h3>
                             <small class="text-muted">Jan – present</small>
                         </div>
@@ -291,7 +265,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-muted small mb-1 fw-medium">Month Revenue</p>
+                            <p class="text-muted small mb-1 fw-medium">Month Revenue <span class="badge bg-light text-muted border fw-normal" style="font-size:.65rem;vertical-align:middle;">Monthly</span></p>
                             <h3 class="fw-bold text-dark mb-0">PKR {{ revenue_month|intcomma }}</h3>
                             <small class="text-muted">{{ payments_month }} payment(s)</small>
                         </div>
@@ -335,9 +309,6 @@
             </div>
         </div>
     </div>
-
-
-
 
     <!-- ── CHARTS & ANALYTICS ─────────────────────────────────────── -->
     <div class="d-flex align-items-center mb-3 mt-4">
