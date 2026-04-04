@@ -122,7 +122,7 @@ sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && p
 from django.contrib.auth import get_user_model
 User = get_user_model()
 if not User.objects.filter(email='mark@exarth.com').exists():
-    User.objects.create_superuser(email='mark@exarth.com', password='mark')
+    User.objects.create_superuser(username='mark', email='mark@exarth.com', password='mark')
     print('Superuser created: mark@exarth.com')
 else:
     print('Superuser already exists, skipping.')
