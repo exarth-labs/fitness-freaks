@@ -73,7 +73,7 @@ def protocol_validator(value):
 
 
 class Application(models.Model):
-    name = models.CharField(max_length=100, help_text='Application name', default='Fitness Freaks')
+    name = models.CharField(max_length=100, help_text='Application name', default='Fitness Freak')
     short_name = models.CharField(max_length=10, help_text='Your application short name', default='FF')
     tagline = models.CharField(
         max_length=100, help_text='Your application business line', default='Your digital partner'

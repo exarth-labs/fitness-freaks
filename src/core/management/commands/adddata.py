@@ -278,7 +278,7 @@ def seed_notifications(count=40):
     if not users:
         return 0
     subjects = [
-        'Welcome to Fitness Freaks!',
+        'Welcome to Fitness Freak!',
         'Your subscription is expiring soon',
         'Payment received – Thank you!',
         'Renew your membership today',

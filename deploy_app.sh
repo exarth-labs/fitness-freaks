@@ -11,7 +11,7 @@ DB_NAME="fitness_freaks_db"
 DB_USER="fitness_user"
 DB_PASS="SecureSecretPasswordChangeMe123!"
 
-DOMAIN="fitnessfreaks.exarth.com"
+DOMAIN="fitnessfreak.exarth.com"
 ADMIN_EMAIL="mark@exarth.com"
 
 # The Git SSH URL of your repository
@@ -117,6 +117,17 @@ sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && p
 sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py migrate"
 sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py collectstatic --noinput"
 
+# Create superuser if it doesn't already exist
+sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py shell -c \"
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(email='mark@exarth.com').exists():
+    User.objects.create_superuser(email='mark@exarth.com', password='mark')
+    print('Superuser created: mark@exarth.com')
+else:
+    print('Superuser already exists, skipping.')
+\""
+
 echo "========================================="
 echo "6. Configuring Gunicorn Systemd"
 echo "========================================="
@@ -190,6 +201,7 @@ systemctl restart nginx
 # Ensure firewall allows Nginx Full
 ufw allow 'Nginx Full'
 ufw allow 'OpenSSH'
+ufw --force enable
 
 echo "========================================="
 echo "8. Setting up SSL with Let's Encrypt"

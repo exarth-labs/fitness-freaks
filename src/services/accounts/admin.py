@@ -224,6 +224,6 @@ class InstructorAdmin(admin.ModelAdmin):
     ordering = ['-created_on']
 
 
-admin.site.site_header = "Fitness Freaks Administration"
-admin.site.site_title = "Fitness Freaks Admin"
+admin.site.site_header = "Fitness Freak Administration"
+admin.site.site_title = "Fitness Freak Admin"
 admin.site.index_title = "Gym Management"
