@@ -27,3 +27,4 @@ paramiko
 mailchimp_transactional
 fido2
 django-widget-tweaks
+django-cors-headers
