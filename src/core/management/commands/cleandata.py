@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = 'Delete all data except the first superuser. Keeps shifts and plans intact.'
+    help = 'Delete ALL data except the first superuser (including shifts and plans).'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -19,18 +19,12 @@ class Command(BaseCommand):
             action='store_true',
             help='Skip confirmation prompt',
         )
-        parser.add_argument(
-            '--all',
-            action='store_true',
-            dest='delete_all',
-            help='Also delete shifts and subscription plans',
-        )
 
     def handle(self, *args, **options):
         if not options['yes']:
             self.stdout.write(self.style.WARNING(
                 '\n  This will delete ALL data except the first superuser.\n'
-                '  Run with --yes to confirm, or --all to also wipe shifts & plans.\n'
+                '  Run with --yes to skip this prompt.\n'
             ))
             confirm = input('  Type "yes" to continue: ').strip().lower()
             if confirm != 'yes':
@@ -51,6 +45,9 @@ class Command(BaseCommand):
         n = Payment.objects.all().delete()[0]
         self.stdout.write(f'  Payments             → deleted {n}')
 
+        n = Expense.objects.all().delete()[0]
+        self.stdout.write(f'  Expenses             → deleted {n}')
+
         n = Member.objects.all().delete()[0]
         self.stdout.write(f'  Members              → deleted {n}')
 
@@ -64,14 +61,10 @@ class Command(BaseCommand):
         n = qs.delete()[0]
         self.stdout.write(f'  Users                → deleted {n}')
 
-        if options['delete_all']:
-            n = SubscriptionPlan.objects.all().delete()[0]
-            self.stdout.write(f'  Subscription plans   → deleted {n}')
+        n = SubscriptionPlan.objects.all().delete()[0]
+        self.stdout.write(f'  Subscription plans   → deleted {n}')
 
-            n = GymShift.objects.all().delete()[0]
-            self.stdout.write(f'  Gym shifts           → deleted {n}')
-        else:
-            self.stdout.write(f'  Subscription plans   → kept ({SubscriptionPlan.objects.count()} records)')
-            self.stdout.write(f'  Gym shifts           → kept ({GymShift.objects.count()} records)')
+        n = GymShift.objects.all().delete()[0]
+        self.stdout.write(f'  Gym shifts           → deleted {n}')
 
         self.stdout.write(self.style.SUCCESS('\n  Done.\n'))

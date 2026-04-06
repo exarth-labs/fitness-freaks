@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ImproperlyConfigured
 from django.core.paginator import Paginator
 from django.db import OperationalError, transaction
 from django.shortcuts import get_object_or_404, redirect
@@ -205,6 +205,16 @@ class CoreDeleteViewMixin(CustomPermissionMixin, View):
                 return redirect(reverse(redirect_url_name, kwargs={"pk": redirect_pk}))
             return redirect(reverse(redirect_url_name))
 
-        # Default fallback
-        redirect_kwargs = {k: v for k, v in kwargs.items() if k != 'pk'}
-        return redirect(reverse(self.redirect_url, kwargs=redirect_kwargs or self.redirect_kwargs))
+        # Named redirect_url takes priority over success_url
+        if self.redirect_url:
+            redirect_kwargs = {k: v for k, v in kwargs.items() if k != 'pk'}
+            return redirect(reverse(self.redirect_url, kwargs=redirect_kwargs or self.redirect_kwargs))
+
+        # Fall back to success_url (mirrors Django's DeleteView behaviour)
+        success_url = getattr(self, 'success_url', None)
+        if success_url:
+            return redirect(str(success_url))
+
+        raise ImproperlyConfigured(
+            f"{self.__class__.__name__} requires either 'redirect_url' or 'success_url' to be set."
+        )

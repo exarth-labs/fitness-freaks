@@ -344,14 +344,6 @@
                 <div class="card-body">
                     {% if plan_distribution %}
                     <div id="planChart"></div>
-                    <ul class="list-unstyled mt-2 mb-0">
-                        {% for plan in plan_distribution %}
-                        <li class="d-flex justify-content-between align-items-center py-1 border-bottom border-light">
-                            <span class="small text-truncate me-2" style="max-width:160px;">{{ plan.name }}</span>
-                            <span class="badge bg-light text-dark border rounded-pill">{{ plan.member_count }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
                     {% else %}
                     <div class="text-center py-5">
                         <i class="bx bx-info-circle text-muted fs-1"></i>
