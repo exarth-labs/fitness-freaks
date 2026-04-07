@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, time
 from django import template
 from django.urls import reverse
 from urllib.parse import urlencode
@@ -95,6 +95,7 @@ def get_field_value(obj, field_name):
     """
     Template filter to get a field's value from a model instance:
     - For DateTimeFields: returns date
+    - For TimeFields: returns formatted time (e.g., 6:00 AM)
     - For choice fields: returns get_FOO_display()
     - For ForeignKey/related fields: returns str(obj)
     - Else: returns raw value
@@ -105,6 +106,10 @@ def get_field_value(obj, field_name):
         # Handle DateTimeField: return just the date
         if isinstance(field_value, datetime):
             return field_value.date()
+
+        # Handle TimeField: return formatted time (e.g., 6:00 AM)
+        if isinstance(field_value, time):
+            return field_value.strftime('%I:%M %p')
 
         # Handle choice fields: call get_FOO_display() if available
         get_display_method = f"get_{field_name}_display"
