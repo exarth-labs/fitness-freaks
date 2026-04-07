@@ -98,24 +98,14 @@
                                         <td>
                                             {% block conditionals %}
                                                 {% with value=obj|get_field_value:field_name %}
-                                                    {% if value == True %}
-                                                        <span class="badge bg-success-subtle text-success">
-                                                            <i class="bx bx-check me-1"></i> Yes
-                                                        </span>
-                                                    {% elif value == False %}
-                                                        <span class="badge bg-danger-subtle text-danger">
-                                                            <i class="bx bx-x me-1"></i> No
-                                                        </span>
+                                                    {% if value is True %}
+                                                        <i class="bx bx-check-circle text-success fs-5"></i>
+                                                    {% elif value is False %}
+                                                        <i class="bx bx-x-circle text-danger fs-5"></i>
                                                     {% elif field_name in "notes description address remarks summary" %}
                                                         {{ value|truncatechars:20 }}
                                                     {% elif field_name == "status" %}
                                                         <span class="badge bg-info-subtle text-info">{{ value }}</span>
-                                                    {% elif field_name == "is_active" %}
-                                                        {% if value %}
-                                                            <span class="badge bg-success-subtle text-success">Active</span>
-                                                        {% else %}
-                                                            <span class="badge bg-secondary-subtle text-secondary">Inactive</span>
-                                                        {% endif %}
                                                     {% else %}
                                                         {{ value|default:"-" }}
                                                     {% endif %}

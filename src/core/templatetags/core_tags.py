@@ -96,6 +96,7 @@ def get_field_value(obj, field_name):
     Template filter to get a field's value from a model instance:
     - For DateTimeFields: returns date
     - For TimeFields: returns formatted time (e.g., 6:00 AM)
+    - For BooleanFields: returns raw boolean
     - For choice fields: returns get_FOO_display()
     - For ForeignKey/related fields: returns str(obj)
     - Else: returns raw value
@@ -110,6 +111,10 @@ def get_field_value(obj, field_name):
         # Handle TimeField: return formatted time (e.g., 6:00 AM)
         if isinstance(field_value, time):
             return field_value.strftime('%I:%M %p')
+
+        # Handle boolean fields: return raw boolean (don't convert to string)
+        if isinstance(field_value, bool):
+            return field_value
 
         # Handle choice fields: call get_FOO_display() if available
         get_display_method = f"get_{field_name}_display"
