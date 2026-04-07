@@ -117,7 +117,7 @@ class MemberCreateView(FinanceCreateViewMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, "Member created successfully.")
-        return reverse_lazy('finance:member_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('finance:member_list')
 
 
 class MemberUpdateView(FinanceUpdateViewMixin, UpdateView):
@@ -127,7 +127,7 @@ class MemberUpdateView(FinanceUpdateViewMixin, UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, "Member updated successfully.")
-        return reverse_lazy('finance:member_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('finance:member_list')
 
 
 class MemberDeleteView(FinanceDeleteViewMixin, DeleteView):
@@ -160,7 +160,7 @@ class PaymentCreateView(FinanceCreateViewMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, "Payment recorded successfully.")
-        return reverse_lazy('finance:payment_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('finance:payment_list')
 
 
 class PaymentUpdateView(FinanceUpdateViewMixin, UpdateView):
