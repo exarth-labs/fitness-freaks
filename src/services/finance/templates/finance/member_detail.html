@@ -60,8 +60,12 @@
                             <td>{{ object.user.phone_number|default:"-" }}</td>
                         </tr>
                         <tr>
+                            <th>Gender</th>
+                            <td>{{ object.user.get_gender_display|default:"-" }}</td>
+                        </tr>
+                        <tr>
                             <th>CNIC</th>
-                            <td>{{ object.cnic|default:"-" }}</td>
+                            <td>{{ object.user.cnic|default:"-" }}</td>
                         </tr>
                         <tr>
                             <th>Join Date</th>

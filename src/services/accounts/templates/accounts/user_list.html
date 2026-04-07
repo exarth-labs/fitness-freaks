@@ -16,6 +16,7 @@
             <th class="text-nowrap"><i class="bx bx-user me-1"></i>Name</th>
             <th class="text-nowrap"><i class="bx bx-envelope me-1"></i>Email</th>
             <th class="text-nowrap"><i class="bx bx-phone me-1"></i>Phone</th>
+            <th class="text-nowrap"><i class="bx bx-id-card me-1"></i>Gender</th>
             <th class="text-nowrap"><i class="bx bx-briefcase me-1"></i>Type</th>
             <th class="text-nowrap text-center"><i class="bx bx-check-circle me-1"></i>Status</th>
             <th class="text-nowrap text-center"><i class="bx bx-cog me-1"></i>Actions</th>
@@ -37,12 +38,24 @@
                     <a href="mailto:{{ obj.email }}" class="text-decoration-none">
                         {{ obj.email }}
                     </a>
+                    {% if obj.cnic %}
+                        <br><small class="text-muted">{{ obj.cnic }}</small>
+                    {% endif %}
                 </td>
                 <td>
                     {% if obj.phone_number %}
                         <a href="tel:{{ obj.phone_number }}" class="text-decoration-none">
                             {{ obj.phone_number }}
                         </a>
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if obj.gender %}
+                        <span class="badge bg-light text-dark border">
+                            {{ obj.get_gender_display }}
+                        </span>
                     {% else %}
                         <span class="text-muted">—</span>
                     {% endif %}

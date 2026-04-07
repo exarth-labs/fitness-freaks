@@ -12,11 +12,13 @@ from .models import Instructor
 class UserCreateForm(UserCreationForm):
 
     class Meta:
-        model = get_user_model()  # Replace with your custom User model if needed
+        model = get_user_model()
         fields = (
             "username",
             "email",
             "phone_number",
+            "cnic",
+            "gender",
             "first_name",
             "last_name",
             "user_type",
@@ -27,10 +29,11 @@ class UserCreateForm(UserCreationForm):
             "password2",
         )
         widgets = {
-            "first_name": forms.TextInput(attrs={"placeholder": "Marcus"}),
-            "last_name": forms.TextInput(attrs={"placeholder": "Merlin"}),
+            "first_name": forms.TextInput(attrs={"placeholder": "First name"}),
+            "last_name": forms.TextInput(attrs={"placeholder": "Last name"}),
             "email": forms.EmailInput(attrs={"placeholder": "admin@fitnessfreaks.com"}),
-            "username": forms.TextInput(attrs={"placeholder": "admin"}),
+            "username": forms.TextInput(attrs={"placeholder": "username"}),
+            "cnic": forms.TextInput(attrs={"placeholder": "12345-1234567-1"}),
             "password1": forms.PasswordInput(attrs={"placeholder": "Password"}),
             "password2": forms.PasswordInput(attrs={"placeholder": "Confirm Password"}),
         }
@@ -40,6 +43,7 @@ class UserCreateForm(UserCreationForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
+            # Identity section
             Row(
                 Column('first_name', css_class='form-group col-md-6 mb-0'),
                 Column('last_name', css_class='form-group col-md-6 mb-0'),
@@ -50,9 +54,15 @@ class UserCreateForm(UserCreationForm):
                 Column('phone_number', css_class='form-group col-md-4 mb-0'),
             ),
             Row(
+                Column('cnic', css_class='form-group col-md-4 mb-0'),
+                Column('gender', css_class='form-group col-md-4 mb-0'),
+            ),
+            # Passwords
+            Row(
                 Column('password1', css_class='form-group col-md-6 mb-0'),
                 Column('password2', css_class='form-group col-md-6 mb-0'),
             ),
+            # Account settings
             Row(
                 Column('user_type', css_class='form-group col-md-3 mb-0'),
                 Column('is_staff', css_class='form-group col-md-3 mb-0'),
@@ -71,11 +81,13 @@ class UserCreateForm(UserCreationForm):
 class UserUpdateForm(ModelForm):
 
     class Meta:
-        model = get_user_model()  # Replace with your custom User model if needed
+        model = get_user_model()
         fields = (
             "username",
             "email",
             "phone_number",
+            "cnic",
+            "gender",
             "first_name",
             "last_name",
             "user_type",
@@ -84,10 +96,11 @@ class UserUpdateForm(ModelForm):
             "is_active",
         )
         widgets = {
-            "first_name": forms.TextInput(attrs={"placeholder": "Marcus"}),
-            "last_name": forms.TextInput(attrs={"placeholder": "Merlin"}),
+            "first_name": forms.TextInput(attrs={"placeholder": "First name"}),
+            "last_name": forms.TextInput(attrs={"placeholder": "Last name"}),
             "email": forms.EmailInput(attrs={"placeholder": "admin@fitnessfreaks.com"}),
-            "username": forms.TextInput(attrs={"placeholder": "admin"}),
+            "username": forms.TextInput(attrs={"placeholder": "username"}),
+            "cnic": forms.TextInput(attrs={"placeholder": "12345-1234567-1"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -95,6 +108,7 @@ class UserUpdateForm(ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
+            # Identity section
             Row(
                 Column('first_name', css_class='form-group col-md-6 mb-0'),
                 Column('last_name', css_class='form-group col-md-6 mb-0'),
@@ -105,10 +119,15 @@ class UserUpdateForm(ModelForm):
                 Column('phone_number', css_class='form-group col-md-4 mb-0'),
             ),
             Row(
-                Column('user_type', css_class='form-group col-md-4 mb-0'),
-                Column('is_staff', css_class='form-group col-md-4 mb-0'),
-                Column('is_superuser', css_class='form-group col-md-4 mb-0'),
-                Column('is_active', css_class='form-group col-md-4 mb-0'),
+                Column('cnic', css_class='form-group col-md-4 mb-0'),
+                Column('gender', css_class='form-group col-md-4 mb-0'),
+            ),
+            # Account settings
+            Row(
+                Column('user_type', css_class='form-group col-md-3 mb-0'),
+                Column('is_staff', css_class='form-group col-md-3 mb-0'),
+                Column('is_superuser', css_class='form-group col-md-3 mb-0'),
+                Column('is_active', css_class='form-group col-md-3 mb-0'),
             ),
         )
 
