@@ -53,12 +53,9 @@ class ClientMixin(LoginRequiredMixin):
         if user.is_staff:
             return redirect('dashboard:dashboard')
 
-        company = user.get_company()
-        if not company:
-            return redirect('onboarding:cross_verification')
-
-        if not company.complete_full:
-            return redirect('onboarding:cross_verification')
+        # Check if user has a member profile (i.e., is a gym member)
+        if not hasattr(user, 'member_profile'):
+            return redirect('accounts:cross_verification')
 
         return super().dispatch(request, *args, **kwargs)
 

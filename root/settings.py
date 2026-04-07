@@ -19,15 +19,14 @@ DOMAIN = env('DOMAIN')
 PROTOCOL = env('PROTOCOL')
 BASE_URL = f"{PROTOCOL}://{DOMAIN}"
 ALLOWED_HOSTS = str(env('ALLOWED_HOSTS')).split(',')
-CSRF_TRUSTED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'http://localhost',
     'http://127.0.0.1',
     f'{PROTOCOL}://{DOMAIN}',
 ]
-CSRF_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
-CORS_ORIGINS_WHITELIST = CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 LOGOUT_REDIRECT_URL = '/accounts/cross-auth/'
 LOGIN_REDIRECT_URL = '/accounts/cross-auth/'
@@ -94,20 +93,6 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
     # YOUR BACKENDS
 )
-
-# CORS settings
-CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
 
 TEMPLATES = [
     {

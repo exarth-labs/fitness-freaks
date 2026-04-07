@@ -293,23 +293,13 @@ class Payment(models.Model):
         return self.amount - self.discount
 
     def save(self, *args, **kwargs):
-        # Auto-update member subscription on successful payment
-        if self.status == PaymentStatus.PAID and self.subscription_plan:
-            member = self.member
+        # Auto-set period dates on first creation if not provided
+        if self.status == PaymentStatus.PAID and self.subscription_plan and not self.pk:
             if not self.period_start:
                 self.period_start = timezone.now().date()
             if not self.period_end:
                 from datetime import timedelta
                 self.period_end = self.period_start + timedelta(days=self.subscription_plan.duration_days)
-
-            # Update member subscription dates
-            if not member.subscription_start or self.period_start < member.subscription_start:
-                member.subscription_start = self.period_start
-            if not member.subscription_end or self.period_end > member.subscription_end:
-                member.subscription_end = self.period_end
-            member.subscription_plan = self.subscription_plan
-            member.status = SubscriptionStatus.ACTIVE
-            member.save()
 
         super().save(*args, **kwargs)
 
