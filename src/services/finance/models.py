@@ -84,7 +84,7 @@ class SubscriptionPlan(models.Model):
     price = models.DecimalField(
         max_digits=10, decimal_places=2,
         validators=[MinValueValidator(Decimal('0.00'))],
-        help_text='Price in PKR'
+        help_text='Subscription price in PKR'
     )
     description = models.TextField(blank=True, null=True)
 
@@ -224,6 +224,12 @@ class Member(models.Model):
 """ PAYMENT """
 
 
+class PaymentTypeChoice(models.TextChoices):
+    REGISTRATION = 'registration', 'Registration (New Member)'
+    RENEWAL = 'renewal', 'Renewal (Existing Member)'
+    REGULAR = 'regular', 'Regular (Fee Only)'
+
+
 class Payment(models.Model):
     member = models.ForeignKey(
         Member, on_delete=models.CASCADE, related_name='payments'
@@ -232,10 +238,19 @@ class Payment(models.Model):
         SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True
     )
 
+    payment_type = models.CharField(
+        max_length=20, choices=PaymentTypeChoice.choices, default=PaymentTypeChoice.REGULAR,
+        help_text='Type of payment: determines fee structure'
+    )
     amount = models.DecimalField(
         max_digits=10, decimal_places=2,
         validators=[MinValueValidator(Decimal('0.00'))],
-        help_text='Amount in PKR'
+        help_text='Subscription fee amount in PKR'
+    )
+    registration_fee = models.DecimalField(
+        max_digits=10, decimal_places=2, default=Decimal('0.00'),
+        validators=[MinValueValidator(Decimal('0.00'))],
+        help_text='One-time registration fee charged (PKR, 0 for regular payments)'
     )
     discount = models.DecimalField(
         max_digits=10, decimal_places=2, default=Decimal('0.00'),
@@ -280,14 +295,60 @@ class Payment(models.Model):
         return f"{self.member} - PKR {self.amount} - {self.payment_date.strftime('%Y-%m-%d')}"
 
     def get_display_fields(self):
-        return ['member', 'amount', 'payment_method', 'payment_date', 'status']
+        return ['member', 'payment_type', 'amount', 'payment_method', 'payment_date', 'status']
 
     def get_action_urls(self, user):
         return get_action_urls(self, user, True)
 
+    def clean(self):
+        """Validate payment structure based on payment type"""
+        from src.core.models import Application
+
+        super().clean()
+
+        # Member must have a subscription plan for any payment
+        if self.payment_type != PaymentTypeChoice.REGULAR and not self.member:
+            raise ValidationError({'member': 'Member is required.'})
+
+        if not self.subscription_plan:
+            raise ValidationError({
+                'subscription_plan': 'Subscription plan is required for all payment types.'
+            })
+
+        # Amount must match the subscription plan price
+        if self.amount and self.subscription_plan:
+            if self.amount != self.subscription_plan.price:
+                raise ValidationError({
+                    'amount': f'Amount must match subscription plan price: PKR {self.subscription_plan.price}'
+                })
+
+        # Registration fee validation based on payment type
+        if self.payment_type in (PaymentTypeChoice.REGISTRATION, PaymentTypeChoice.RENEWAL):
+            app = Application.objects.first()
+            expected_reg_fee = app.registration_fee if app else Decimal('0.00')
+            if self.registration_fee <= 0:
+                raise ValidationError({
+                    'registration_fee': f'Registration fee is required for {self.get_payment_type_display()} payments.'
+                })
+            if expected_reg_fee > 0 and self.registration_fee != expected_reg_fee:
+                raise ValidationError({
+                    'registration_fee': f'Registration fee must be PKR {expected_reg_fee}.'
+                })
+        elif self.payment_type == PaymentTypeChoice.REGULAR:
+            if self.registration_fee > 0:
+                raise ValidationError({
+                    'registration_fee': 'Registration fee should be 0 for regular payments.'
+                })
+
     @property
     def net_amount(self):
+        """Amount after discount (subscription only)"""
         return self.amount - self.discount
+
+    @property
+    def total_collected(self):
+        """Total amount collected (subscription + registration fee - discount)"""
+        return self.amount + self.registration_fee - self.discount
 
     def save(self, *args, **kwargs):
         # Auto-set period dates on first creation if not provided

@@ -2,7 +2,7 @@ from django import forms
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import SubscriptionPlan, GymShift, Member, Payment, Expense
+from .models import SubscriptionPlan, GymShift, Member, Payment, Expense, PaymentTypeChoice
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Div, HTML, Field
 
@@ -191,7 +191,7 @@ class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = [
-            'member', 'subscription_plan', 'amount', 'discount',
+            'member', 'subscription_plan', 'payment_type', 'amount', 'registration_fee', 'discount',
             'payment_method', 'payment_date', 'reference_number',
             'status', 'period_start', 'period_end', 'notes'
         ]
@@ -204,6 +204,7 @@ class PaymentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['registration_fee'].help_text = "Auto-filled based on payment type"
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -214,27 +215,28 @@ class PaymentForm(forms.ModelForm):
                     Column('subscription_plan', css_class='form-group col-md-6 mb-0'),
                 ),
                 Row(
+                    Column('payment_type', css_class='form-group col-md-4 mb-0'),
                     Column('amount', css_class='form-group col-md-4 mb-0'),
                     Column('discount', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
+                    Column('registration_fee', css_class='form-group col-md-4 mb-0'),
                     Column('payment_method', css_class='form-group col-md-4 mb-0'),
+                    Column('reference_number', css_class='form-group col-md-4 mb-0'),
+                ),
+                HTML('<div class="mb-3"><small class="text-muted"><strong>Total:</strong> PKR <span id="total-amount">0</span></small></div>'),
+                Row(
+                    Column('status', css_class='form-group col-md-4 mb-0'),
                 ),
                 HTML('<hr class="my-4">'),
             ),
             Div(
-                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-calendar me-1"></i>Period & Status</h6>'),
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-calendar me-1"></i>Period & Notes</h6>'),
                 Row(
                     Column('payment_date', css_class='form-group col-md-4 mb-0'),
                     Column('period_start', css_class='form-group col-md-4 mb-0'),
                     Column('period_end', css_class='form-group col-md-4 mb-0'),
                 ),
-                Row(
-                    Column('status', css_class='form-group col-md-6 mb-0'),
-                    Column('reference_number', css_class='form-group col-md-6 mb-0'),
-                ),
-                HTML('<hr class="my-4">'),
-            ),
-            Div(
-                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-note me-1"></i>Notes</h6>'),
                 'notes',
             ),
         )
@@ -244,13 +246,14 @@ class QuickPaymentForm(forms.ModelForm):
     """Simplified payment form for quick fee collection"""
     class Meta:
         model = Payment
-        fields = ['member', 'subscription_plan', 'amount', 'discount', 'payment_method', 'reference_number', 'notes']
+        fields = ['member', 'subscription_plan', 'payment_type', 'amount', 'registration_fee', 'discount', 'payment_method', 'reference_number', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 2}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['registration_fee'].help_text = "Auto-filled based on payment type"
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -259,14 +262,16 @@ class QuickPaymentForm(forms.ModelForm):
                 Column('subscription_plan', css_class='form-group col-md-6 mb-0'),
             ),
             Row(
+                Column('payment_type', css_class='form-group col-md-4 mb-0'),
                 Column('amount', css_class='form-group col-md-4 mb-0'),
                 Column('discount', css_class='form-group col-md-4 mb-0'),
-                Column('payment_method', css_class='form-group col-md-4 mb-0'),
             ),
             Row(
-                Column('reference_number', css_class='form-group col-md-6 mb-0'),
-                Column('notes', css_class='form-group col-md-6 mb-0'),
+                Column('registration_fee', css_class='form-group col-md-4 mb-0'),
+                Column('payment_method', css_class='form-group col-md-4 mb-0'),
+                Column('reference_number', css_class='form-group col-md-4 mb-0'),
             ),
+            'notes',
         )
 
     def save(self, commit=True):

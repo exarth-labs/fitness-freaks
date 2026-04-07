@@ -3,6 +3,8 @@ from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 import re
+from decimal import Decimal
+from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 
 def phone_number_validator(value):
@@ -115,6 +117,12 @@ class Application(models.Model):
     )
     latitude = models.DecimalField(max_digits=10, decimal_places=6, help_text='latitude', default=23.7)
     longitude = models.DecimalField(max_digits=10, decimal_places=6, help_text='longitude', default=90.3)
+
+    registration_fee = models.DecimalField(
+        max_digits=10, decimal_places=2, default=Decimal('0.00'),
+        validators=[MinValueValidator(Decimal('0.00'))],
+        help_text='One-time registration fee for new gym members (PKR)'
+    )
 
     terms_url = models.URLField(
         max_length=255, default='https://fitnessfreaks.com/terms-of-use/', help_text='Terms and Conditions page link'
