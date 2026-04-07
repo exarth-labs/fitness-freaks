@@ -50,59 +50,58 @@ class MemberForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['is_active'].help_text = "Inactive members cannot access gym services and are excluded from reports"
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
             # Assignment section
             Div(
-                HTML('<h5 class="mb-3"><i class="bx bx-user me-1"></i>Assignment</h5>'),
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-user me-1"></i>Assignment</h6>'),
                 Row(
-                    Column('user', css_class='form-group col-md-6 mb-0'),
-                    Column('shift', css_class='form-group col-md-6 mb-0'),
+                    Column('user', css_class='form-group col-md-4 mb-0'),
+                    Column('shift', css_class='form-group col-md-4 mb-0'),
+                    Column('instructor', css_class='form-group col-md-4 mb-0'),
                 ),
-                Row(
-                    Column('instructor', css_class='form-group col-md-6 mb-0'),
-                ),
-                css_class='mb-4',
+                HTML('<hr class="my-4">'),
             ),
             # Subscription section
             Div(
-                HTML('<h5 class="mb-3"><i class="bx bx-id-card me-1"></i>Subscription</h5>'),
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-id-card me-1"></i>Subscription</h6>'),
                 Row(
                     Column('subscription_plan', css_class='form-group col-md-4 mb-0'),
                     Column('subscription_start', css_class='form-group col-md-4 mb-0'),
                     Column('subscription_end', css_class='form-group col-md-4 mb-0'),
                 ),
                 Row(
+                    Column('join_date', css_class='form-group col-md-4 mb-0'),
                     Column('status', css_class='form-group col-md-4 mb-0'),
                     Column('is_active', css_class='form-group col-md-4 mb-0'),
-                    Column('join_date', css_class='form-group col-md-4 mb-0'),
                 ),
-                css_class='mb-4',
+                HTML('<hr class="my-4">'),
             ),
             # Emergency contact section
             Div(
-                HTML('<h5 class="mb-3"><i class="bx bx-phone-call me-1"></i>Emergency Contact</h5>'),
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-phone-call me-1"></i>Emergency Contact</h6>'),
                 Row(
                     Column('emergency_contact_name', css_class='form-group col-md-6 mb-0'),
                     Column('emergency_contact_phone', css_class='form-group col-md-6 mb-0'),
                 ),
-                css_class='mb-4',
+                HTML('<hr class="my-4">'),
             ),
             # Health section
             Div(
-                HTML('<h5 class="mb-3"><i class="bx bx-heart me-1"></i>Health Information</h5>'),
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-heart me-1"></i>Health Information</h6>'),
                 Row(
-                    Column('blood_group', css_class='form-group col-md-3 mb-0'),
-                    Column('weight', css_class='form-group col-md-3 mb-0'),
-                    Column('height', css_class='form-group col-md-3 mb-0'),
+                    Column('blood_group', css_class='form-group col-md-4 mb-0'),
+                    Column('weight', css_class='form-group col-md-4 mb-0'),
+                    Column('height', css_class='form-group col-md-4 mb-0'),
                 ),
                 'health_conditions',
-                css_class='mb-4',
+                HTML('<hr class="my-4">'),
             ),
             # Notes section
             Div(
-                HTML('<h5 class="mb-3"><i class="bx bx-note me-1"></i>Notes</h5>'),
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-note me-1"></i>Notes</h6>'),
                 'notes',
             ),
         )

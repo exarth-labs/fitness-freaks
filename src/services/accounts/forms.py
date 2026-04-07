@@ -43,31 +43,42 @@ class UserCreateForm(UserCreationForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            # Identity section
-            Row(
-                Column('first_name', css_class='form-group col-md-6 mb-0'),
-                Column('last_name', css_class='form-group col-md-6 mb-0'),
+            # Personal Info section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-user me-1"></i>Personal Information</h6>'),
+                Row(
+                    Column('first_name', css_class='form-group col-md-6 mb-0'),
+                    Column('last_name', css_class='form-group col-md-6 mb-0'),
+                ),
+                Row(
+                    Column('username', css_class='form-group col-md-4 mb-0'),
+                    Column('email', css_class='form-group col-md-4 mb-0'),
+                    Column('phone_number', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
+                    Column('cnic', css_class='form-group col-md-6 mb-0'),
+                    Column('gender', css_class='form-group col-md-6 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
             ),
-            Row(
-                Column('username', css_class='form-group col-md-4 mb-0'),
-                Column('email', css_class='form-group col-md-4 mb-0'),
-                Column('phone_number', css_class='form-group col-md-4 mb-0'),
+            # Password section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-lock-alt me-1"></i>Password</h6>'),
+                Row(
+                    Column('password1', css_class='form-group col-md-6 mb-0'),
+                    Column('password2', css_class='form-group col-md-6 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
             ),
-            Row(
-                Column('cnic', css_class='form-group col-md-4 mb-0'),
-                Column('gender', css_class='form-group col-md-4 mb-0'),
-            ),
-            # Passwords
-            Row(
-                Column('password1', css_class='form-group col-md-6 mb-0'),
-                Column('password2', css_class='form-group col-md-6 mb-0'),
-            ),
-            # Account settings
-            Row(
-                Column('user_type', css_class='form-group col-md-3 mb-0'),
-                Column('is_staff', css_class='form-group col-md-3 mb-0'),
-                Column('is_superuser', css_class='form-group col-md-3 mb-0'),
-                Column('is_active', css_class='form-group col-md-3 mb-0'),
+            # Account settings section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-cog me-1"></i>Account Settings</h6>'),
+                Row(
+                    Column('user_type', css_class='form-group col-md-3 mb-0'),
+                    Column('is_staff', css_class='form-group col-md-3 mb-0'),
+                    Column('is_superuser', css_class='form-group col-md-3 mb-0'),
+                    Column('is_active', css_class='form-group col-md-3 mb-0'),
+                ),
             ),
         )
 
@@ -108,26 +119,33 @@ class UserUpdateForm(ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            # Identity section
-            Row(
-                Column('first_name', css_class='form-group col-md-6 mb-0'),
-                Column('last_name', css_class='form-group col-md-6 mb-0'),
+            # Personal Info section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-user me-1"></i>Personal Information</h6>'),
+                Row(
+                    Column('first_name', css_class='form-group col-md-6 mb-0'),
+                    Column('last_name', css_class='form-group col-md-6 mb-0'),
+                ),
+                Row(
+                    Column('username', css_class='form-group col-md-4 mb-0'),
+                    Column('email', css_class='form-group col-md-4 mb-0'),
+                    Column('phone_number', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
+                    Column('cnic', css_class='form-group col-md-6 mb-0'),
+                    Column('gender', css_class='form-group col-md-6 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
             ),
-            Row(
-                Column('username', css_class='form-group col-md-4 mb-0'),
-                Column('email', css_class='form-group col-md-4 mb-0'),
-                Column('phone_number', css_class='form-group col-md-4 mb-0'),
-            ),
-            Row(
-                Column('cnic', css_class='form-group col-md-4 mb-0'),
-                Column('gender', css_class='form-group col-md-4 mb-0'),
-            ),
-            # Account settings
-            Row(
-                Column('user_type', css_class='form-group col-md-3 mb-0'),
-                Column('is_staff', css_class='form-group col-md-3 mb-0'),
-                Column('is_superuser', css_class='form-group col-md-3 mb-0'),
-                Column('is_active', css_class='form-group col-md-3 mb-0'),
+            # Account settings section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-cog me-1"></i>Account Settings</h6>'),
+                Row(
+                    Column('user_type', css_class='form-group col-md-3 mb-0'),
+                    Column('is_staff', css_class='form-group col-md-3 mb-0'),
+                    Column('is_superuser', css_class='form-group col-md-3 mb-0'),
+                    Column('is_active', css_class='form-group col-md-3 mb-0'),
+                ),
             ),
         )
 
