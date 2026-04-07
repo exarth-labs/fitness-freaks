@@ -205,6 +205,19 @@ class PaymentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['registration_fee'].help_text = "Auto-filled based on payment type"
+        self.fields['registration_fee'].widget.attrs['id'] = 'id_registration_fee'
+
+        # Set initial values from form's initial data or kwargs
+        initial = kwargs.get('initial', {})
+        if initial.get('subscription_plan'):
+            plan = initial['subscription_plan']
+            if hasattr(plan, 'price'):
+                self.fields['amount'].initial = plan.price
+        if initial.get('amount'):
+            self.fields['amount'].initial = initial['amount']
+        if initial.get('registration_fee'):
+            self.fields['registration_fee'].initial = initial['registration_fee']
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -219,13 +232,13 @@ class PaymentForm(forms.ModelForm):
                     Column('amount', css_class='form-group col-md-4 mb-0'),
                     Column('discount', css_class='form-group col-md-4 mb-0'),
                 ),
+                # Registration fee on its own row so it can be toggled independently
                 Row(
                     Column('registration_fee', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
                     Column('payment_method', css_class='form-group col-md-4 mb-0'),
                     Column('reference_number', css_class='form-group col-md-4 mb-0'),
-                ),
-                HTML('<div class="mb-3"><small class="text-muted"><strong>Total:</strong> PKR <span id="total-amount">0</span></small></div>'),
-                Row(
                     Column('status', css_class='form-group col-md-4 mb-0'),
                 ),
                 HTML('<hr class="my-4">'),

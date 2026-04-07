@@ -178,6 +178,18 @@ class PaymentCreateView(FinanceCreateViewMixin, CreateView):
                 pass
         return initial
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial'].update(self.get_initial())
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from src.core.models import Application
+        app = Application.objects.first()
+        context['registration_fee_help'] = str(app.registration_fee) if app else '0.00'
+        return context
+
     def form_valid(self, form):
         form.instance.received_by = self.request.user
         return super().form_valid(form)

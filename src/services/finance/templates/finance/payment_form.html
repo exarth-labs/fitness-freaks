@@ -1,1 +1,56 @@
 {% extends 'include/base/base_create.html' %}
+
+{% block js-code %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const paymentTypeSelect = document.getElementById('id_payment_type');
+        const paymentMethodSelect = document.getElementById('id_payment_method');
+        const regFeeInput = document.getElementById('id_registration_fee');
+        const regFeeHelp = "{{ registration_fee_help|default:'0.00' }}";
+        const initialAmount = "{{ form.amount.value|default:'' }}";
+        const initialRegFee = "{{ form.registration_fee.value|default:'0.00' }}";
+
+        function getClosestRow(el) {
+            return el ? el.closest('.row') || el.closest('.form-row') || el.parentElement : null;
+        }
+
+        function toggleFields() {
+            const payType = paymentTypeSelect?.value || 'regular';
+            const payMethod = paymentMethodSelect?.value || 'cash';
+
+            // Registration fee visibility
+            if (regFeeInput) {
+                const regFeeRow = getClosestRow(regFeeInput);
+                if (payType === 'registration' || payType === 'renewal') {
+                    if (regFeeRow) regFeeRow.style.display = '';
+                    // Auto-fill only if empty and not on initial load with value
+                    if (!regFeeInput.value || regFeeInput.value === '0.00' || regFeeInput.value === '0') {
+                        regFeeInput.value = regFeeHelp || '0.00';
+                    }
+                } else {
+                    if (regFeeRow) regFeeRow.style.display = 'none';
+                    regFeeInput.value = '0.00';
+                }
+            }
+
+            // Reference number visibility (hide only for cash)
+            const refNumberInput = document.getElementById('id_reference_number');
+            if (refNumberInput) {
+                const refRow = getClosestRow(refNumberInput);
+                if (payMethod === 'cash') {
+                    if (refRow) refRow.style.display = 'none';
+                    refNumberInput.value = '';
+                } else {
+                    if (refRow) refRow.style.display = '';
+                }
+            }
+        }
+
+        paymentTypeSelect?.addEventListener('change', toggleFields);
+        paymentMethodSelect?.addEventListener('change', toggleFields);
+
+        // Run on page load
+        toggleFields();
+    });
+</script>
+{% endblock %}

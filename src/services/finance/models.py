@@ -340,6 +340,13 @@ class Payment(models.Model):
                     'registration_fee': 'Registration fee should be 0 for regular payments.'
                 })
 
+        # Reference number is required for non-cash payments
+        if self.payment_method and self.payment_method != PaymentMethodChoice.CASH:
+            if not self.reference_number:
+                raise ValidationError({
+                    'reference_number': f'Reference number is required for {self.get_payment_method_display()} payments.'
+                })
+
     @property
     def net_amount(self):
         """Amount after discount (subscription only)"""
