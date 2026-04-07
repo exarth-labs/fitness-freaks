@@ -182,11 +182,18 @@ class DashboardView(TemplateView):
         context = super(DashboardView, self).get_context_data(**kwargs)
         stats = get_dashboard_statistics()
 
-        # Serialize chart data as JSON to ensure proper JavaScript formatting
-        stats['chart_labels_json'] = json.dumps(stats.get('chart_labels', []))
-        stats['chart_revenue_json'] = json.dumps(stats.get('chart_revenue', []))
-        stats['chart_expenses_json'] = json.dumps(stats.get('chart_expenses', []))
-        stats['chart_new_members_json'] = json.dumps(stats.get('chart_new_members', []))
+        # Only set chart data when there's at least one non-zero value
+        has_revenue = any(v > 0 for v in stats.get('chart_revenue', []))
+        has_expenses = any(v > 0 for v in stats.get('chart_expenses', []))
+        has_members_data = any(v > 0 for v in stats.get('chart_new_members', []))
+
+        if has_revenue or has_expenses:
+            stats['chart_labels_json'] = json.dumps(stats.get('chart_labels', []))
+            stats['chart_revenue_json'] = json.dumps(stats.get('chart_revenue', []))
+            stats['chart_expenses_json'] = json.dumps(stats.get('chart_expenses', []))
+
+        if has_members_data:
+            stats['chart_new_members_json'] = json.dumps(stats.get('chart_new_members', []))
 
         context.update(stats)
         return context
