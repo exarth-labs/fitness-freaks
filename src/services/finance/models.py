@@ -126,8 +126,7 @@ class Member(models.Model):
         SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True, related_name='members'
     )
 
-    # Gender & Shift
-    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')], default='male')
+    # Shift & Instructor
     shift = models.ForeignKey(
         GymShift, on_delete=models.SET_NULL, null=True, blank=True, related_name='members',
         help_text='Assigned gym timing slot'
@@ -137,14 +136,7 @@ class Member(models.Model):
         help_text='Assigned instructor (optional)'
     )
 
-    # Contact
-    phone_number = models.CharField(max_length=15, blank=True, null=True, help_text="Member's direct contact number")
-
-    # Pakistan-specific fields
-    cnic = models.CharField(
-        max_length=15, blank=True, null=True, unique=True,
-        help_text='CNIC Number (e.g., 12345-1234567-1)'
-    )
+    # Emergency contact
     emergency_contact_name = models.CharField(max_length=100, blank=True, null=True)
     emergency_contact_phone = models.CharField(max_length=15, blank=True, null=True)
 
@@ -195,8 +187,13 @@ class Member(models.Model):
     def __str__(self):
         return f"{self.user.get_full_name() or self.user.email}"
 
+    @property
+    def gender(self):
+        """Derive gender from the related user model"""
+        return self.user.gender
+
     def get_display_fields(self):
-        return ['user', 'gender', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
+        return ['user', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
 
     def get_action_urls(self, user):
         return get_action_urls(self, user, True)

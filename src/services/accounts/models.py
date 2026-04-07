@@ -1,5 +1,8 @@
+import re
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django_resized import ResizedImageField
 
 from src.core.bll import get_action_urls
@@ -11,6 +14,22 @@ class UserType(models.TextChoices):
     client = 'client', 'Client'
 
 
+class GenderChoice(models.TextChoices):
+    MALE = 'male', 'Male'
+    FEMALE = 'female', 'Female'
+
+
+def validate_pakistan_cnic(value):
+    """Validate Pakistan CNIC format: 12345-1234567-1"""
+    if value in [None, '']:
+        return
+    cnic_regex = r'^\d{5}-\d{7}-\d{1}$'
+    if not re.match(cnic_regex, value):
+        raise ValidationError(
+            'CNIC must be in format: 12345-1234567-1 (5 digits, 7 digits, 1 digit)'
+        )
+
+
 class User(AbstractUser):
     email = models.EmailField(unique=True, max_length=200)
     profile_image = ResizedImageField(
@@ -20,6 +39,15 @@ class User(AbstractUser):
     phone_number = models.CharField(
         max_length=14, blank=True, null=True,
         validators=[phone_number_null_or_validator]
+    )
+    gender = models.CharField(
+        max_length=10, choices=GenderChoice.choices, blank=True, null=True,
+        help_text="User's gender (optional)"
+    )
+    cnic = models.CharField(
+        max_length=15, blank=True, null=True, unique=True,
+        validators=[validate_pakistan_cnic],
+        help_text='CNIC Number (e.g., 12345-1234567-1) — optional, Pakistan only'
     )
     user_type = models.CharField(max_length=50, choices=UserType.choices, default=UserType.client)
     description = models.TextField(null=True, blank=True)

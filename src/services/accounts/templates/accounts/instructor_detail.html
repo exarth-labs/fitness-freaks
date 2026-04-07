@@ -124,7 +124,7 @@
                                             {{ member.user.get_full_name|default:member.user.email }}
                                         </a>
                                     </td>
-                                    <td>{{ member.phone_number|default:"—" }}</td>
+                                    <td>{{ member.user.phone_number|default:"—" }}</td>
                                     <td>{{ member.shift.name|default:"—" }}</td>
                                     <td>
                                         <span class="badge bg-info-subtle text-info">{{ member.get_status_display }}</span>

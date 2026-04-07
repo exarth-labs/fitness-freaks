@@ -561,7 +561,7 @@
                                             <strong>{{ member.user.get_full_name|default:member.user.email }}</strong>
                                         </div>
                                     </td>
-                                    <td class="text-muted small">{{ member.phone_number|default:member.user.phone_number|default:"—" }}</td>
+                                    <td class="text-muted small">{{ member.user.phone_number|default:"—" }}</td>
                                     <td class="small">{{ member.subscription_plan.name|default:"—" }}</td>
                                     <td class="small">{{ member.shift.name|default:"—" }}</td>
                                     <td>

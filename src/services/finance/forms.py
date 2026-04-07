@@ -32,9 +32,9 @@ class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = [
-            'user', 'gender', 'phone_number', 'shift', 'instructor',
+            'user', 'shift', 'instructor',
             'subscription_plan',
-            'cnic', 'emergency_contact_name', 'emergency_contact_phone',
+            'emergency_contact_name', 'emergency_contact_phone',
             'blood_group', 'health_conditions', 'weight', 'height',
             'subscription_start', 'subscription_end', 'status',
             'join_date', 'notes', 'is_active'
@@ -53,8 +53,8 @@ class MemberQuickAddForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = [
-            'user', 'gender', 'phone_number', 'shift',
-            'subscription_plan', 'cnic',
+            'user', 'shift',
+            'subscription_plan',
             'emergency_contact_name', 'emergency_contact_phone',
             'blood_group', 'notes'
         ]
