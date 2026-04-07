@@ -331,7 +331,13 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    {% if chart_revenue_json and chart_labels_json %}
                     <div id="revenueChart"></div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        {% include 'include/globals/not-found.html' %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -346,8 +352,7 @@
                     <div id="planChart"></div>
                     {% else %}
                     <div class="text-center py-5">
-                        <i class="bx bx-info-circle text-muted fs-1"></i>
-                        <p class="text-muted small mb-0 mt-2">No active plans yet</p>
+                    {% include 'include/globals/not-found.html' %}
                     </div>
                     {% endif %}
                 </div>
@@ -364,7 +369,13 @@
                     <div class="chart-subtitle">Monthly sign-ups over last 6 months</div>
                 </div>
                 <div class="card-body">
+                    {% if chart_new_members_json and chart_labels_json %}
                     <div id="membersChart"></div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        {% include 'include/globals/not-found.html' %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -390,8 +401,7 @@
                     </ul>
                     {% else %}
                     <div class="text-center py-5">
-                        <i class="bx bx-info-circle text-muted fs-1"></i>
-                        <p class="text-muted small mb-0 mt-2">No payments this month</p>
+                        {% include 'include/globals/not-found.html' %}
                     </div>
                     {% endif %}
                 </div>
@@ -462,8 +472,7 @@
                     </div>
                     {% else %}
                     <div class="text-center py-5">
-                        <i class="bx bx-check-circle text-dark fs-1"></i>
-                        <p class="text-muted small mb-0 mt-2">No members expiring soon</p>
+                    {% include 'include/globals/not-found.html' %}
                     </div>
                     {% endif %}
                 </div>
@@ -509,8 +518,7 @@
                     </div>
                     {% else %}
                     <div class="text-center py-5">
-                        <i class="bx bx-info-circle text-muted fs-1"></i>
-                        <p class="text-muted small mb-0 mt-2">No recent payments</p>
+                    {% include 'include/globals/not-found.html' %}
                     </div>
                     {% endif %}
                 </div>
@@ -585,8 +593,7 @@
                     </div>
                     {% else %}
                     <div class="text-center py-5">
-                        <i class="bx bx-check-shield text-dark fs-1"></i>
-                        <p class="text-muted small mb-0 mt-2">No defaulters — all members are up to date!</p>
+                    {% include 'include/globals/not-found.html' %}
                     </div>
                     {% endif %}
                 </div>
@@ -609,7 +616,7 @@
 
     /* ── 1. Revenue vs Expenses Area Chart ─────────────────────── */
     const revenueEl = document.getElementById('revenueChart');
-    if (revenueEl && labelsData.length > 0) {
+    if (revenueEl) {
         new ApexCharts(revenueEl, {
             series: [
                 { name: 'Revenue', data: revenueData },
@@ -645,8 +652,6 @@
                 y: { formatter: v => 'PKR ' + v.toLocaleString() }
             }
         }).render();
-    } else if (revenueEl) {
-        revenueEl.innerHTML = '<div class="text-center py-5 text-muted small">No data for the last 6 months</div>';
     }
 
     /* ── 2. Plan Distribution Donut ────────────────────────────── */
@@ -693,7 +698,7 @@
 
     /* ── 3. New Members Bar Chart ───────────────────────────────── */
     const membersEl = document.getElementById('membersChart');
-    if (membersEl && labelsData.length > 0) {
+    if (membersEl) {
         new ApexCharts(membersEl, {
             series: [{ name: 'New Members', data: newMembersData }],
             chart: {
@@ -729,8 +734,6 @@
             grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
             tooltip: { y: { formatter: v => v + ' members' } }
         }).render();
-    } else if (membersEl) {
-        membersEl.innerHTML = '<div class="text-center py-5 text-muted small">No enrollment data available</div>';
     }
 
     /* ── 4. Payment Methods Horizontal Bar ─────────────────────── */
