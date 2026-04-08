@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load core_tags %}
 
 {% block subtitle %}Instructor — {{ object }}{% endblock %}
 
@@ -10,7 +11,9 @@
     <div class="mb-3">
         <div class="d-flex flex-wrap justify-content-between align-items-center">
             <div class="d-flex flex-column me-3">
-                <h1 class="h3 fw-bold mb-0">Instructor Profile</h1>
+                <h1 class="h3 fw-bold mb-0">
+                    {{ object.user.get_full_name|default:object.user.email }}
+                </h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 pt-1">
                         <li class="breadcrumb-item">
@@ -23,121 +26,175 @@
                     </ol>
                 </nav>
             </div>
-            <div class="d-flex gap-2">
+            <div class="d-flex align-items-center gap-2">
                 {% if request.user.is_staff %}
-                    <a href="{% url 'accounts:instructor_update' object.pk %}" class="btn btn-primary">
+                    <a href="{% url 'accounts:instructor_update' object.pk %}" class="btn btn-primary shadow-sm">
                         <i class="bx bx-edit me-1"></i> Edit
                     </a>
-                    <a href="{% url 'accounts:instructor_delete' object.pk %}" class="btn btn-danger">
+                    <a href="{% url 'accounts:instructor_delete' object.pk %}" class="btn btn-danger shadow-sm">
                         <i class="bx bx-trash me-1"></i> Delete
                     </a>
                 {% endif %}
-                <a href="javascript:window.history.back();" class="btn btn-light">
-                    <i class="bx bx-arrow-back me-1"></i> Back
+                <a href="javascript:window.history.back();" class="btn fw-bold btn-primary shadow-sm">
+                    <i class="bx bx-arrow-back"></i> Back
                 </a>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body text-center py-4">
-                    {% if object.user.profile_image %}
-                        <img src="{{ object.user.profile_image.url }}" alt="Profile"
-                             class="rounded-circle mb-3" width="100" height="100" style="object-fit:cover;">
-                    {% else %}
-                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3"
-                             style="width:100px;height:100px;">
-                            <span class="text-white fs-1 fw-bold">{{ object.user.first_name|first|upper }}</span>
+        <div class="col-md-12">
+            <div class="card shadow-none border">
+                <div class="card-body">
+
+                    {# IMAGE #}
+                    <div class="text-center">
+                        {% if object.user.profile_image %}
+                            <img class="rounded-circle" src="{{ object.user.profile_image.url }}" height="150px" alt="user-image">
+                        {% else %}
+                            <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center" style="width:150px;height:150px;">
+                                <span class="text-white fs-1 fw-bold">{{ object.user.first_name|first|upper }}{{ object.user.last_name|first|upper }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# NAME #}
+                    <div class="text-center mt-2">
+                        <h5 class="mb-0">
+                            <b>{{ object.user.get_full_name|default:object.user.username }}</b>
+                            {% if object.is_active %}
+                                <i class="fa fa-check-circle text-success"></i>
+                            {% endif %}
+                        </h5>
+                        <p class="fw-light text-muted mb-0">Specialization > {{ object.specialization }}</p>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col">
+                            <p class="mb-0 text-center h3"><i class="bx bx-envelope"></i></p>
+                            <p class="mb-0 text-center h5">Email</p>
+                            <p class="mb-0 text-center">{{ object.user.email }}</p>
                         </div>
-                    {% endif %}
-                    <h5 class="fw-bold mb-1">{{ object.user.get_full_name|default:object.user.email }}</h5>
-                    <p class="text-muted mb-2">{{ object.specialization }}</p>
-                    {% if object.is_active %}
-                        <span class="badge bg-success-subtle text-success">Active</span>
-                    {% else %}
-                        <span class="badge bg-danger-subtle text-danger">Inactive</span>
-                    {% endif %}
+                        <div class="col">
+                            <p class="mb-0 text-center h3"><i class="bx bx-phone"></i></p>
+                            <p class="mb-0 text-center h5">Phone</p>
+                            <p class="mb-0 text-center">{{ object.user.phone_number|check_null }}</p>
+                        </div>
+                        <div class="col text-center">
+                            <p class="mb-0 text-center h3"><i class="bx bx-dumbbell"></i></p>
+                            <p class="mb-0 text-center h5">Specialization</p>
+                            <p class="mb-0 text-center"><b>{{ object.specialization }}</b></p>
+                        </div>
+                        <div class="col text-center">
+                            <p class="mb-0 text-center h3"><i class="bx bx-calendar"></i></p>
+                            <p class="mb-0 text-center h5">Hired</p>
+                            <p class="mb-0 text-center">{{ object.hire_date|date:"M d, Y"|check_null }}</p>
+                        </div>
+                        <div class="col text-center">
+                            <p class="mb-0 text-center h3"><i class="bx bx-group"></i></p>
+                            <p class="mb-0 text-center h5">Members</p>
+                            <p class="mb-0 text-center"><b>{{ object.members.count }}</b></p>
+                        </div>
+
+                        {% if request.user.is_superuser or perms.accounts.change_user %}
+                        <div class="col">
+                            <p class="mb-0 text-center h3"><i class="bx bx-user"></i></p>
+                            <p class="mb-0 text-center h5">Edit</p>
+                            <p class="mb-0 text-center">
+                                <a class="text-danger" href="{% url 'accounts:instructor_update' object.pk %}">Change</a>
+                            </p>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Details</h5>
-                </div>
+    {# SECTION: Bio #}
+    {% if object.bio %}
+    <div class="d-flex align-items-center mb-3 mt-4">
+        <h6 class="mb-0 text-uppercase text-muted fw-bold small">About</h6>
+        <div class="flex-grow-1 border-bottom ms-3"></div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-12">
+            <div class="card shadow-none border">
                 <div class="card-body">
-                    <table class="table table-borderless mb-0">
-                        <tr>
-                            <td class="text-muted fw-medium" style="width:180px;">Email</td>
-                            <td>
-                                <a href="mailto:{{ object.user.email }}">{{ object.user.email }}</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted fw-medium">Phone</td>
-                            <td>{{ object.user.phone_number|default:"—" }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted fw-medium">Specialization</td>
-                            <td>{{ object.specialization }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted fw-medium">Hired On</td>
-                            <td>{{ object.hire_date|date:"M d, Y"|default:"—" }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted fw-medium">Members Assigned</td>
-                            <td>{{ object.members.count }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted fw-medium">Bio</td>
-                            <td>{{ object.bio|default:"—" }}</td>
-                        </tr>
-                    </table>
+                    <p class="text-muted mb-0">{{ object.bio }}</p>
                 </div>
             </div>
+        </div>
+    </div>
+    {% endif %}
 
+    {# SECTION: Assigned Members #}
+    <div class="d-flex align-items-center mb-3 mt-4">
+        <h6 class="mb-0 text-uppercase text-muted fw-bold small">
+            Assigned Members
             {% if object.members.exists %}
-            <div class="card shadow-sm mt-3">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Assigned Members</h5>
-                </div>
+                <span class="badge bg-light text-dark border ms-1">{{ object.members.count }}</span>
+            {% endif %}
+        </h6>
+        <div class="flex-grow-1 border-bottom ms-3"></div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-12">
+            <div class="card shadow-none border">
                 <div class="card-body p-0">
+                    {% if object.members.exists %}
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
+                                    <th>#</th>
                                     <th>Member</th>
                                     <th>Phone</th>
                                     <th>Shift</th>
                                     <th>Status</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for member in object.members.all %}
                                 <tr>
+                                    <td><span class="badge bg-light text-dark">{{ member.pk }}</span></td>
                                     <td>
-                                        <a href="{% url 'finance:member_detail' member.pk %}">
-                                            {{ member.user.get_full_name|default:member.user.email }}
-                                        </a>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-xs bg-light border text-dark fw-bold">
+                                                {{ member.user.first_name|first|default:member.user.email|first|upper }}
+                                            </div>
+                                            <strong>{{ member.user.get_full_name|default:member.user.email|truncatechars:20 }}</strong>
+                                        </div>
                                     </td>
-                                    <td>{{ member.phone_number|default:"—" }}</td>
+                                    <td class="text-muted small">{{ member.user.phone_number|default:"—" }}</td>
                                     <td>{{ member.shift.name|default:"—" }}</td>
                                     <td>
                                         <span class="badge bg-info-subtle text-info">{{ member.get_status_display }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'finance:member_detail' member.pk %}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bx bx-show"></i>
+                                        </a>
                                     </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        {% include 'include/globals/not-found.html' %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-            {% endif %}
         </div>
     </div>
+
 </div>
 {% endblock %}

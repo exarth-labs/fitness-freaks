@@ -1,10 +1,11 @@
 import json
-from datetime import datetime
+from datetime import datetime, time, date
 from django import template
 from django.urls import reverse
 from urllib.parse import urlencode
 import re
 
+from django.utils import formats
 from root.settings import BASE_URL
 from src.core.bll import get_action_urls
 register = template.Library()
@@ -94,7 +95,10 @@ def model_form_delete(action_url, instance, redirect_url=None, redirect_pk=None)
 def get_field_value(obj, field_name):
     """
     Template filter to get a field's value from a model instance:
-    - For DateTimeFields: returns date
+    - For DateTimeFields: returns formatted date using Django's DATE_FORMAT
+    - For DateFields: returns formatted date using Django's DATE_FORMAT
+    - For TimeFields: returns formatted time (e.g., 6:00 AM)
+    - For BooleanFields: returns raw boolean
     - For choice fields: returns get_FOO_display()
     - For ForeignKey/related fields: returns str(obj)
     - Else: returns raw value
@@ -102,9 +106,21 @@ def get_field_value(obj, field_name):
     try:
         field_value = getattr(obj, field_name)
 
-        # Handle DateTimeField: return just the date
+        # Handle DateTimeField: format using Django's default DATE_FORMAT
         if isinstance(field_value, datetime):
-            return field_value.date()
+            return formats.date_format(field_value)
+
+        # Handle DateField: format using Django's default DATE_FORMAT
+        if isinstance(field_value, date):
+            return formats.date_format(field_value)
+
+        # Handle TimeField: return formatted time (e.g., 6:00 AM)
+        if isinstance(field_value, time):
+            return field_value.strftime('%I:%M %p')
+
+        # Handle boolean fields: return raw boolean (don't convert to string)
+        if isinstance(field_value, bool):
+            return field_value
 
         # Handle choice fields: call get_FOO_display() if available
         get_display_method = f"get_{field_name}_display"

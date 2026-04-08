@@ -76,6 +76,7 @@ class MemberFilter(django_filters.FilterSet):
         label='Status',
     )
     gender = django_filters.ChoiceFilter(
+        field_name='user__gender',
         choices=[('', 'All Genders'), ('male', 'Male'), ('female', 'Female')],
         empty_label=None,
         label='Gender',
@@ -107,8 +108,8 @@ class MemberFilter(django_filters.FilterSet):
             models.Q(user__email__icontains=value) |
             models.Q(user__first_name__icontains=value) |
             models.Q(user__last_name__icontains=value) |
-            models.Q(cnic__icontains=value) |
-            models.Q(phone_number__icontains=value) |
+            models.Q(user__cnic__icontains=value) |
+            models.Q(user__phone_number__icontains=value) |
             models.Q(emergency_contact_phone__icontains=value)
         )
 

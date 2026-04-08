@@ -53,13 +53,6 @@ class ClientMixin(LoginRequiredMixin):
         if user.is_staff:
             return redirect('dashboard:dashboard')
 
-        company = user.get_company()
-        if not company:
-            return redirect('onboarding:cross_verification')
-
-        if not company.complete_full:
-            return redirect('onboarding:cross_verification')
-
         return super().dispatch(request, *args, **kwargs)
 
 

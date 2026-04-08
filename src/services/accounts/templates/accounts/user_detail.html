@@ -74,11 +74,25 @@
                                     <p class="mb-0 text-center h3"><i class="mdi mdi-email"></i></p>
                                     <p class="mb-0 text-center h5">Email</p>
                                     <p class="mb-0 text-center">{{ user.email }}</p>
+                                    {% if user.cnic %}
+                                        <p class="mb-0 text-center"><small class="text-muted">{{ user.cnic }}</small></p>
+                                    {% endif %}
                                 </div>
                                 <div class="col">
                                     <p class="mb-0 text-center h3"><i class="mdi mdi-phone"></i></p>
                                     <p class="mb-0 text-center h5">Phone</p>
                                     <p class="mb-0 text-center">{{ user.phone_number|check_null }}</p>
+                                </div>
+                                <div class="col text-center">
+                                    <p class="mb-0 text-center h3"><i class="mdi mdi-gender-male-female"></i></p>
+                                    <p class="mb-0 text-center h5">Gender</p>
+                                    <p class="mb-0 text-center">
+                                        {% if user.gender %}
+                                            <b>{{ user.get_gender_display }}</b>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </p>
                                 </div>
                                 <div class="col text-center">
                                     <p class="mb-0 text-center h3"><i class="mdi mdi-shield-account"></i></p>

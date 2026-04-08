@@ -236,9 +236,13 @@ class InstructorCreateView(StaffMixin, CreateView):
     model = Instructor
     form_class = InstructorForm
 
+    def form_valid(self, form):
+        form.instance.is_active = True
+        return super().form_valid(form)
+
     def get_success_url(self):
         messages.success(self.request, "Instructor added successfully.")
-        return reverse_lazy('accounts:instructor_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('accounts:instructor_list')
 
 
 class InstructorUpdateView(StaffMixin, UpdateView):
@@ -247,7 +251,7 @@ class InstructorUpdateView(StaffMixin, UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, "Instructor updated successfully.")
-        return self.request.META.get('HTTP_REFERER', reverse_lazy('accounts:instructor_list'))
+        return reverse_lazy('accounts:instructor_list')
 
 
 class InstructorDeleteView(StaffMixin, DeleteView):

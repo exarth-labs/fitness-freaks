@@ -1,1 +1,66 @@
 {% extends 'include/base/base_create.html' %}
+
+{% block js-code %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const paymentTypeSelect = document.getElementById('id_payment_type');
+        const paymentMethodSelect = document.getElementById('id_payment_method');
+        const subscriptionPlanSelect = document.getElementById('id_subscription_plan');
+        const amountInput = document.getElementById('id_amount');
+        const regFeeInput = document.getElementById('id_registration_fee');
+        const regFeeHelp = "{{ registration_fee_help|default:'0.00' }}";
+
+        // Get plan prices from data attribute
+        const planPrices = JSON.parse(subscriptionPlanSelect?.dataset.plans || '{}');
+
+        function updateAmount() {
+            const planId = subscriptionPlanSelect?.value;
+            if (planId && planPrices[planId] && amountInput) {
+                amountInput.value = planPrices[planId];
+            }
+        }
+
+        function toggleFields() {
+            const payType = paymentTypeSelect?.value || 'regular';
+            const payMethod = paymentMethodSelect?.value || 'cash';
+
+            // Registration fee visibility - target only the column
+            if (regFeeInput) {
+                const regFeeCol = regFeeInput.closest('.reg-fee-col') || regFeeInput.parentElement;
+                if (payType === 'registration' || payType === 'renewal') {
+                    if (regFeeCol) regFeeCol.style.display = '';
+                    if (!regFeeInput.value || regFeeInput.value === '0.00' || regFeeInput.value === '0') {
+                        regFeeInput.value = regFeeHelp || '0.00';
+                    }
+                } else {
+                    if (regFeeCol) regFeeCol.style.display = 'none';
+                    regFeeInput.value = '0.00';
+                }
+            }
+
+            // Reference number visibility (hide only for cash)
+            const refNumberInput = document.getElementById('id_reference_number');
+            if (refNumberInput) {
+                const refNumCol = refNumberInput.closest('.ref-num-col') || refNumberInput.parentElement;
+                if (payMethod === 'cash') {
+                    if (refNumCol) refNumCol.style.display = 'none';
+                    refNumberInput.value = '';
+                } else {
+                    if (refNumCol) refNumCol.style.display = '';
+                }
+            }
+        }
+
+        subscriptionPlanSelect?.addEventListener('change', function() {
+            updateAmount();
+            toggleFields();
+        });
+        paymentTypeSelect?.addEventListener('change', toggleFields);
+        paymentMethodSelect?.addEventListener('change', toggleFields);
+
+        // Run on page load
+        updateAmount();
+        toggleFields();
+    });
+</script>
+{% endblock %}

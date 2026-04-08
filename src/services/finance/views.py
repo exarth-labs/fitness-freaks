@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from datetime import timedelta
+from decimal import Decimal
 
 from .filters import SubscriptionPlanFilter, MemberFilter, PaymentFilter, ExpenseFilter
 from .forms import SubscriptionPlanForm, GymShiftForm, MemberForm, PaymentForm, ExpenseForm, RenewSubscriptionForm
@@ -117,7 +118,7 @@ class MemberCreateView(FinanceCreateViewMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, "Member created successfully.")
-        return reverse_lazy('finance:member_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('finance:member_list')
 
 
 class MemberUpdateView(FinanceUpdateViewMixin, UpdateView):
@@ -127,7 +128,7 @@ class MemberUpdateView(FinanceUpdateViewMixin, UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, "Member updated successfully.")
-        return reverse_lazy('finance:member_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('finance:member_list')
 
 
 class MemberDeleteView(FinanceDeleteViewMixin, DeleteView):
@@ -154,13 +155,48 @@ class PaymentCreateView(FinanceCreateViewMixin, CreateView):
     form_class = PaymentForm
     template_name = 'finance/payment_form.html'
 
+    def get_initial(self):
+        initial = super().get_initial()
+        # Get global registration fee
+        from src.core.models import Application
+        app = Application.objects.first()
+        reg_fee = app.registration_fee if app else Decimal('0.00')
+
+        # Pre-fill if member is selected
+        member_id = self.request.GET.get('member')
+        if member_id:
+            try:
+                member = Member.objects.get(pk=member_id)
+                initial['member'] = member
+                if member.subscription_plan:
+                    initial['subscription_plan'] = member.subscription_plan
+                    initial['amount'] = member.subscription_plan.price
+                # Add registration fee only if member has no prior payments
+                if not member.payments.exists() and reg_fee > 0:
+                    initial['registration_fee'] = reg_fee
+            except (Member.DoesNotExist, ValueError):
+                pass
+        return initial
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial'].update(self.get_initial())
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from src.core.models import Application
+        app = Application.objects.first()
+        context['registration_fee_help'] = str(app.registration_fee) if app else '0.00'
+        return context
+
     def form_valid(self, form):
         form.instance.received_by = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
         messages.success(self.request, "Payment recorded successfully.")
-        return reverse_lazy('finance:payment_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('finance:payment_list')
 
 
 class PaymentUpdateView(FinanceUpdateViewMixin, UpdateView):
@@ -171,6 +207,17 @@ class PaymentUpdateView(FinanceUpdateViewMixin, UpdateView):
     def get_success_url(self):
         messages.success(self.request, "Payment updated successfully.")
         return reverse_lazy('finance:payment_list')
+
+
+class PaymentInvoiceView(DetailView):
+    model = Payment
+    template_name = 'finance/payment_invoice.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from src.core.models import Application
+        context['application'] = Application.objects.first()
+        return context
 
 
 class PaymentDeleteView(FinanceDeleteViewMixin, DeleteView):

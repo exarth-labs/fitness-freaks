@@ -19,12 +19,16 @@ class SubscriptionPlanAdmin(admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ['user', 'gender', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
-    list_filter = ['status', 'gender', 'shift', 'is_active', 'subscription_plan', 'blood_group']
-    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'cnic', 'phone_number']
+    list_display = ['user', 'get_gender', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
+    list_filter = ['status', 'shift', 'is_active', 'subscription_plan', 'blood_group', 'user__gender']
+    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'user__cnic', 'user__phone_number']
     raw_id_fields = ['user', 'subscription_plan', 'shift', 'instructor']
     date_hierarchy = 'join_date'
     ordering = ['-created_on']
+
+    @admin.display(description='Gender', ordering='user__gender')
+    def get_gender(self, obj):
+        return obj.user.get_gender_display() if obj.user.gender else '—'
 
 
 @admin.register(Payment)

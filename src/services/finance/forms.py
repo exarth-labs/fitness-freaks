@@ -1,8 +1,12 @@
+import json
+
 from django import forms
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import SubscriptionPlan, GymShift, Member, Payment, Expense
+from .models import SubscriptionPlan, GymShift, Member, Payment, Expense, PaymentTypeChoice
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column, Div, HTML, Field
 
 
 class GymShiftForm(forms.ModelForm):
@@ -13,6 +17,25 @@ class GymShiftForm(forms.ModelForm):
             'start_time': forms.TimeInput(attrs={'type': 'time'}),
             'end_time': forms.TimeInput(attrs={'type': 'time'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-time me-1"></i>Shift Details</h6>'),
+                Row(
+                    Column('name', css_class='form-group col-md-6 mb-0'),
+                    Column('gender', css_class='form-group col-md-6 mb-0'),
+                ),
+                Row(
+                    Column('start_time', css_class='form-group col-md-4 mb-0'),
+                    Column('end_time', css_class='form-group col-md-4 mb-0'),
+                    Column('is_active', css_class='form-group col-md-4 mb-0'),
+                ),
+            ),
+        )
 
 
 class SubscriptionPlanForm(forms.ModelForm):
@@ -27,25 +50,108 @@ class SubscriptionPlanForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 3}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-package me-1"></i>Plan Details</h6>'),
+                Row(
+                    Column('name', css_class='form-group col-md-6 mb-0'),
+                    Column('duration_days', css_class='form-group col-md-3 mb-0'),
+                    Column('price', css_class='form-group col-md-3 mb-0'),
+                ),
+                Row(
+                    Column('is_active', css_class='form-group col-md-3 mb-0'),
+                    Column('has_personal_trainer', css_class='form-group col-md-3 mb-0'),
+                    Column('has_locker', css_class='form-group col-md-3 mb-0'),
+                    Column('has_cardio_access', css_class='form-group col-md-3 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
+            ),
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-list-ul me-1"></i>Description</h6>'),
+                'description',
+            ),
+        )
+
 
 class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = [
-            'user', 'gender', 'phone_number', 'shift', 'instructor',
-            'subscription_plan',
-            'cnic', 'emergency_contact_name', 'emergency_contact_phone',
+            'user', 'shift', 'instructor',
+            'subscription_plan', 'subscription_start', 'subscription_end', 'status',
+            'emergency_contact_name', 'emergency_contact_phone',
             'blood_group', 'health_conditions', 'weight', 'height',
-            'subscription_start', 'subscription_end', 'status',
             'join_date', 'notes', 'is_active'
         ]
         widgets = {
-            'health_conditions': forms.Textarea(attrs={'rows': 3}),
-            'notes': forms.Textarea(attrs={'rows': 3}),
+            'health_conditions': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Any medical conditions, allergies, etc.'}),
+            'notes': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Additional notes about this member'}),
             'subscription_start': forms.DateInput(attrs={'type': 'date'}),
             'subscription_end': forms.DateInput(attrs={'type': 'date'}),
             'join_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['is_active'].help_text = "Inactive members cannot access gym services and are excluded from reports"
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            # Assignment section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-user me-1"></i>Assignment</h6>'),
+                Row(
+                    Column('user', css_class='form-group col-md-4 mb-0'),
+                    Column('shift', css_class='form-group col-md-4 mb-0'),
+                    Column('instructor', css_class='form-group col-md-4 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
+            ),
+            # Subscription section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-id-card me-1"></i>Subscription</h6>'),
+                Row(
+                    Column('subscription_plan', css_class='form-group col-md-4 mb-0'),
+                    Column('subscription_start', css_class='form-group col-md-4 mb-0'),
+                    Column('subscription_end', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
+                    Column('join_date', css_class='form-group col-md-4 mb-0'),
+                    Column('status', css_class='form-group col-md-4 mb-0'),
+                    Column('is_active', css_class='form-group col-md-4 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
+            ),
+            # Emergency contact section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-phone-call me-1"></i>Emergency Contact</h6>'),
+                Row(
+                    Column('emergency_contact_name', css_class='form-group col-md-6 mb-0'),
+                    Column('emergency_contact_phone', css_class='form-group col-md-6 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
+            ),
+            # Health section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-heart me-1"></i>Health Information</h6>'),
+                Row(
+                    Column('blood_group', css_class='form-group col-md-4 mb-0'),
+                    Column('weight', css_class='form-group col-md-4 mb-0'),
+                    Column('height', css_class='form-group col-md-4 mb-0'),
+                ),
+                'health_conditions',
+                HTML('<hr class="my-4">'),
+            ),
+            # Notes section
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-note me-1"></i>Notes</h6>'),
+                'notes',
+            ),
+        )
 
 
 class MemberQuickAddForm(forms.ModelForm):
@@ -53,8 +159,8 @@ class MemberQuickAddForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = [
-            'user', 'gender', 'phone_number', 'shift',
-            'subscription_plan', 'cnic',
+            'user', 'shift',
+            'subscription_plan',
             'emergency_contact_name', 'emergency_contact_phone',
             'blood_group', 'notes'
         ]
@@ -62,17 +168,37 @@ class MemberQuickAddForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows': 2}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                Column('user', css_class='form-group col-md-6 mb-0'),
+                Column('shift', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('subscription_plan', css_class='form-group col-md-6 mb-0'),
+                Column('blood_group', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('emergency_contact_name', css_class='form-group col-md-6 mb-0'),
+                Column('emergency_contact_phone', css_class='form-group col-md-6 mb-0'),
+            ),
+            'notes',
+        )
+
 
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = [
-            'member', 'subscription_plan', 'amount', 'discount',
+            'member', 'subscription_plan', 'payment_type', 'amount', 'registration_fee', 'discount',
             'payment_method', 'payment_date', 'reference_number',
             'status', 'period_start', 'period_end', 'notes'
         ]
         widgets = {
-            'notes': forms.Textarea(attrs={'rows': 3}),
+            'notes': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Payment notes...'}),
             'payment_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'period_start': forms.DateInput(attrs={'type': 'date'}),
             'period_end': forms.DateInput(attrs={'type': 'date'}),
@@ -80,24 +206,93 @@ class PaymentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Auto-populate amount when subscription plan changes
-        if 'subscription_plan' in self.data:
-            try:
-                plan_id = int(self.data.get('subscription_plan'))
-                plan = SubscriptionPlan.objects.get(pk=plan_id)
+        self.fields['registration_fee'].help_text = "Auto-filled based on payment type"
+        self.fields['registration_fee'].widget.attrs['id'] = 'id_registration_fee'
+
+        # Add price data to subscription_plan options for JS auto-fill
+        plan_prices = {}
+        for plan in SubscriptionPlan.objects.all():
+            plan_prices[str(plan.pk)] = str(plan.price)
+
+        self.fields['subscription_plan'].widget.attrs['data-plans'] = json.dumps(plan_prices)
+
+        # Set initial values from form's initial data or kwargs
+        initial = kwargs.get('initial', {})
+        if initial.get('subscription_plan'):
+            plan = initial['subscription_plan']
+            if hasattr(plan, 'price'):
                 self.fields['amount'].initial = plan.price
-            except (ValueError, SubscriptionPlan.DoesNotExist):
-                pass
+        if initial.get('amount'):
+            self.fields['amount'].initial = initial['amount']
+        if initial.get('registration_fee'):
+            self.fields['registration_fee'].initial = initial['registration_fee']
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-user me-1"></i>Payment Details</h6>'),
+                Row(
+                    Column('member', css_class='form-group col-md-4 mb-0'),
+                    Column('subscription_plan', css_class='form-group col-md-4 mb-0'),
+                    Column('payment_type', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
+
+                    Column('amount', css_class='form-group col-md-4 mb-0'),
+                    Column('discount', css_class='form-group col-md-4 mb-0'),
+                    Column('registration_fee', css_class='form-group col-md-4 mb-0 reg-fee-col'),
+                ),
+                Row(
+                    Column('payment_method', css_class='form-group col-md-4 mb-0'),
+                    Column('reference_number', css_class='form-group col-md-4 mb-0 ref-num-col'),
+                    Column('status', css_class='form-group col-md-4 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
+            ),
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-calendar me-1"></i>Period & Notes</h6>'),
+                Row(
+                    Column('payment_date', css_class='form-group col-md-4 mb-0'),
+                    Column('period_start', css_class='form-group col-md-4 mb-0'),
+                    Column('period_end', css_class='form-group col-md-4 mb-0'),
+                ),
+                'notes',
+            ),
+        )
 
 
 class QuickPaymentForm(forms.ModelForm):
     """Simplified payment form for quick fee collection"""
     class Meta:
         model = Payment
-        fields = ['member', 'subscription_plan', 'amount', 'discount', 'payment_method', 'reference_number', 'notes']
+        fields = ['member', 'subscription_plan', 'payment_type', 'amount', 'registration_fee', 'discount', 'payment_method', 'reference_number', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 2}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['registration_fee'].help_text = "Auto-filled based on payment type"
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                Column('member', css_class='form-group col-md-6 mb-0'),
+                Column('subscription_plan', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
+                Column('payment_type', css_class='form-group col-md-4 mb-0'),
+                Column('amount', css_class='form-group col-md-4 mb-0'),
+                Column('discount', css_class='form-group col-md-4 mb-0'),
+            ),
+            Row(
+                Column('registration_fee', css_class='form-group col-md-4 mb-0'),
+                Column('payment_method', css_class='form-group col-md-4 mb-0'),
+                Column('reference_number', css_class='form-group col-md-4 mb-0'),
+            ),
+            'notes',
+        )
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -117,9 +312,34 @@ class ExpenseForm(forms.ModelForm):
             'payment_method', 'reference_number', 'is_recurring'
         ]
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 3}),
+            'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Expense description...'}),
             'expense_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-receipt me-1"></i>Expense Details</h6>'),
+                Row(
+                    Column('category', css_class='form-group col-md-4 mb-0'),
+                    Column('amount', css_class='form-group col-md-4 mb-0'),
+                    Column('expense_date', css_class='form-group col-md-4 mb-0'),
+                ),
+                Row(
+                    Column('payment_method', css_class='form-group col-md-4 mb-0'),
+                    Column('reference_number', css_class='form-group col-md-4 mb-0'),
+                    Column('is_recurring', css_class='form-group col-md-4 mb-0'),
+                ),
+                HTML('<hr class="my-4">'),
+            ),
+            Div(
+                HTML('<h6 class="mb-3 text-primary"><i class="bx bx-list-ul me-1"></i>Description</h6>'),
+                'description',
+            ),
+        )
 
 
 class RenewSubscriptionForm(forms.Form):

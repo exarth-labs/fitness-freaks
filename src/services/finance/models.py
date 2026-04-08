@@ -84,7 +84,7 @@ class SubscriptionPlan(models.Model):
     price = models.DecimalField(
         max_digits=10, decimal_places=2,
         validators=[MinValueValidator(Decimal('0.00'))],
-        help_text='Price in PKR'
+        help_text='Subscription price in PKR'
     )
     description = models.TextField(blank=True, null=True)
 
@@ -126,8 +126,7 @@ class Member(models.Model):
         SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True, related_name='members'
     )
 
-    # Gender & Shift
-    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')], default='male')
+    # Shift & Instructor
     shift = models.ForeignKey(
         GymShift, on_delete=models.SET_NULL, null=True, blank=True, related_name='members',
         help_text='Assigned gym timing slot'
@@ -137,14 +136,7 @@ class Member(models.Model):
         help_text='Assigned instructor (optional)'
     )
 
-    # Contact
-    phone_number = models.CharField(max_length=15, blank=True, null=True, help_text="Member's direct contact number")
-
-    # Pakistan-specific fields
-    cnic = models.CharField(
-        max_length=15, blank=True, null=True, unique=True,
-        help_text='CNIC Number (e.g., 12345-1234567-1)'
-    )
+    # Emergency contact
     emergency_contact_name = models.CharField(max_length=100, blank=True, null=True)
     emergency_contact_phone = models.CharField(max_length=15, blank=True, null=True)
 
@@ -195,8 +187,13 @@ class Member(models.Model):
     def __str__(self):
         return f"{self.user.get_full_name() or self.user.email}"
 
+    @property
+    def gender(self):
+        """Derive gender from the related user model"""
+        return self.user.gender
+
     def get_display_fields(self):
-        return ['user', 'gender', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
+        return ['user', 'shift', 'subscription_plan', 'subscription_start', 'subscription_end', 'status', 'is_active']
 
     def get_action_urls(self, user):
         return get_action_urls(self, user, True)
@@ -227,6 +224,12 @@ class Member(models.Model):
 """ PAYMENT """
 
 
+class PaymentTypeChoice(models.TextChoices):
+    REGISTRATION = 'registration', 'Registration (New Member)'
+    RENEWAL = 'renewal', 'Renewal (Existing Member)'
+    REGULAR = 'regular', 'Regular (Fee Only)'
+
+
 class Payment(models.Model):
     member = models.ForeignKey(
         Member, on_delete=models.CASCADE, related_name='payments'
@@ -235,10 +238,19 @@ class Payment(models.Model):
         SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True
     )
 
+    payment_type = models.CharField(
+        max_length=20, choices=PaymentTypeChoice.choices, default=PaymentTypeChoice.REGULAR,
+        help_text='Type of payment: determines fee structure'
+    )
     amount = models.DecimalField(
         max_digits=10, decimal_places=2,
         validators=[MinValueValidator(Decimal('0.00'))],
-        help_text='Amount in PKR'
+        help_text='Subscription fee amount in PKR'
+    )
+    registration_fee = models.DecimalField(
+        max_digits=10, decimal_places=2, default=Decimal('0.00'),
+        validators=[MinValueValidator(Decimal('0.00'))],
+        help_text='One-time registration fee charged (PKR, 0 for regular payments)'
     )
     discount = models.DecimalField(
         max_digits=10, decimal_places=2, default=Decimal('0.00'),
@@ -283,33 +295,76 @@ class Payment(models.Model):
         return f"{self.member} - PKR {self.amount} - {self.payment_date.strftime('%Y-%m-%d')}"
 
     def get_display_fields(self):
-        return ['member', 'amount', 'payment_method', 'payment_date', 'status']
+        return ['member', 'payment_type', 'amount', 'payment_method', 'payment_date', 'status']
 
     def get_action_urls(self, user):
         return get_action_urls(self, user, True)
 
+    def clean(self):
+        """Validate payment structure based on payment type"""
+        from src.core.models import Application
+
+        super().clean()
+
+        # Member must have a subscription plan for any payment
+        if self.payment_type != PaymentTypeChoice.REGULAR and not self.member:
+            raise ValidationError({'member': 'Member is required.'})
+
+        if not self.subscription_plan:
+            raise ValidationError({
+                'subscription_plan': 'Subscription plan is required for all payment types.'
+            })
+
+        # Amount must match the subscription plan price
+        if self.amount and self.subscription_plan:
+            if self.amount != self.subscription_plan.price:
+                raise ValidationError({
+                    'amount': f'Amount must match subscription plan price: PKR {self.subscription_plan.price}'
+                })
+
+        # Registration fee validation based on payment type
+        if self.payment_type in (PaymentTypeChoice.REGISTRATION, PaymentTypeChoice.RENEWAL):
+            app = Application.objects.first()
+            expected_reg_fee = app.registration_fee if app else Decimal('0.00')
+            if self.registration_fee <= 0:
+                raise ValidationError({
+                    'registration_fee': f'Registration fee is required for {self.get_payment_type_display()} payments.'
+                })
+            if expected_reg_fee > 0 and self.registration_fee != expected_reg_fee:
+                raise ValidationError({
+                    'registration_fee': f'Registration fee must be PKR {expected_reg_fee}.'
+                })
+        elif self.payment_type == PaymentTypeChoice.REGULAR:
+            if self.registration_fee > 0:
+                raise ValidationError({
+                    'registration_fee': 'Registration fee should be 0 for regular payments.'
+                })
+
+        # Reference number is required for non-cash payments
+        if self.payment_method and self.payment_method != PaymentMethodChoice.CASH:
+            if not self.reference_number:
+                raise ValidationError({
+                    'reference_number': f'Reference number is required for {self.get_payment_method_display()} payments.'
+                })
+
     @property
     def net_amount(self):
+        """Amount after discount (subscription only)"""
         return self.amount - self.discount
 
+    @property
+    def total_collected(self):
+        """Total amount collected (subscription + registration fee - discount)"""
+        return self.amount + self.registration_fee - self.discount
+
     def save(self, *args, **kwargs):
-        # Auto-update member subscription on successful payment
-        if self.status == PaymentStatus.PAID and self.subscription_plan:
-            member = self.member
+        # Auto-set period dates on first creation if not provided
+        if self.status == PaymentStatus.PAID and self.subscription_plan and not self.pk:
             if not self.period_start:
                 self.period_start = timezone.now().date()
             if not self.period_end:
                 from datetime import timedelta
                 self.period_end = self.period_start + timedelta(days=self.subscription_plan.duration_days)
-
-            # Update member subscription dates
-            if not member.subscription_start or self.period_start < member.subscription_start:
-                member.subscription_start = self.period_start
-            if not member.subscription_end or self.period_end > member.subscription_end:
-                member.subscription_end = self.period_end
-            member.subscription_plan = self.subscription_plan
-            member.status = SubscriptionStatus.ACTIVE
-            member.save()
 
         super().save(*args, **kwargs)
 
