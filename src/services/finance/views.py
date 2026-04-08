@@ -209,6 +209,17 @@ class PaymentUpdateView(FinanceUpdateViewMixin, UpdateView):
         return reverse_lazy('finance:payment_list')
 
 
+class PaymentInvoiceView(DetailView):
+    model = Payment
+    template_name = 'finance/payment_invoice.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from src.core.models import Application
+        context['application'] = Application.objects.first()
+        return context
+
+
 class PaymentDeleteView(FinanceDeleteViewMixin, DeleteView):
     model = Payment
     template_name = 'finance/payment_confirm_delete.html'

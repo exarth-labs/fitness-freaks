@@ -5,7 +5,7 @@ from .views import (
     MemberListView, MemberDetailView, MemberCreateView, MemberUpdateView, MemberDeleteView,
     PaymentListView, PaymentDetailView, PaymentCreateView, PaymentUpdateView, PaymentDeleteView,
     ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDeleteView,
-    RenewMemberSubscriptionView,
+    RenewMemberSubscriptionView, PaymentInvoiceView,
 )
 
 app_name = 'finance'
@@ -33,6 +33,7 @@ urlpatterns = [
     # Payments
     path('payments/', PaymentListView.as_view(), name='payment_list'),
     path('payments/<int:pk>/', PaymentDetailView.as_view(), name='payment_detail'),
+    path('payments/<int:pk>/invoice/', PaymentInvoiceView.as_view(), name='payment_invoice'),
     path('payments/create/', PaymentCreateView.as_view(), name='payment_create'),
     path('payments/update/<int:pk>/', PaymentUpdateView.as_view(), name='payment_update'),
     path('payments/delete/<int:pk>/', PaymentDeleteView.as_view(), name='payment_delete'),
