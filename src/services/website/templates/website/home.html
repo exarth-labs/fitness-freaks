@@ -573,30 +573,38 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-xl mb-2">Our Location</h4>
-                        <p class="text-gray-400">Main Boulevard, DHA Phase 6<br>Lahore, Pakistan</p>
+                        <p class="text-gray-400">{% if app.address %}{{ app.address }}{% else %}Main Boulevard, DHA Phase 6<br>Lahore, Pakistan{% endif %}</p>
                     </div>
                 </div>
-                
+
                 <div class="flex items-start space-x-4">
                     <div class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-phone text-2xl text-primary"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-xl mb-2">Phone Number</h4>
-                        <p class="text-gray-400">+92 300 1234567<br>+92 42 111 222 333</p>
+                        <p class="text-gray-400">
+                            {% if app.contact_phone1 %}{{ app.contact_phone1 }}{% endif %}
+                            {% if app.contact_phone2 %}<br>{{ app.contact_phone2 }}{% endif %}
+                            {% if not app.contact_phone1 and not app.contact_phone2 %}+92 300 1234567{% endif %}
+                        </p>
                     </div>
                 </div>
-                
+
                 <div class="flex items-start space-x-4">
                     <div class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-envelope text-2xl text-primary"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-xl mb-2">Email Address</h4>
-                        <p class="text-gray-400">info@fitnessfreaks.pk<br>support@fitnessfreaks.pk</p>
+                        <p class="text-gray-400">
+                            {% if app.contact_email1 %}{{ app.contact_email1 }}{% endif %}
+                            {% if app.contact_email2 %}<br>{{ app.contact_email2 }}{% endif %}
+                            {% if not app.contact_email1 and not app.contact_email2 %}info@fitnessfreaks.pk{% endif %}
+                        </p>
                     </div>
                 </div>
-                
+
                 <div class="flex items-start space-x-4">
                     <div class="w-14 h-14 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-clock text-2xl text-primary"></i>
@@ -629,30 +637,30 @@
             
             <!-- Contact Form -->
             <div class="card-modern animate-on-scroll">
-                <form class="contact-form space-y-6">
+                <form class="contact-form space-y-6" id="contactForm" onsubmit="sendEmail(event)">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold mb-2">Your Name</label>
-                            <input type="text" name="name" class="input-modern w-full" placeholder="John Doe" required>
+                            <input type="text" name="name" id="contactName" class="input-modern w-full" placeholder="John Doe" required>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold mb-2">Email Address</label>
-                            <input type="email" name="email" class="input-modern w-full" placeholder="john@example.com" required>
+                            <input type="email" name="email" id="contactEmail" class="input-modern w-full" placeholder="john@example.com" required>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-semibold mb-2">Phone Number</label>
-                            <input type="tel" name="phone" class="input-modern w-full" placeholder="+92 300 1234567">
+                            <input type="tel" name="phone" id="contactPhone" class="input-modern w-full" placeholder="+92 300 1234567">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold mb-2">Subject</label>
-                            <input type="text" name="subject" class="input-modern w-full" placeholder="Membership Inquiry">
+                            <input type="text" name="subject" id="contactSubject" class="input-modern w-full" placeholder="Membership Inquiry">
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2">Your Message</label>
-                        <textarea name="message" rows="5" class="input-modern w-full" placeholder="Tell us how we can help you..." required></textarea>
+                        <textarea name="message" id="contactMessage" rows="5" class="input-modern w-full" placeholder="Tell us how we can help you..." required></textarea>
                     </div>
                     <button type="submit" class="btn-primary w-full">
                         <i class="fas fa-paper-plane mr-2"></i>SEND MESSAGE
@@ -680,4 +688,28 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function sendEmail(event) {
+    event.preventDefault();
+    const name = document.getElementById('contactName').value;
+    const email = document.getElementById('contactEmail').value;
+    const phone = document.getElementById('contactPhone').value;
+    const subject = document.getElementById('contactSubject').value;
+    const message = document.getElementById('contactMessage').value;
+
+    const mailtoEmail = '{{ app.contact_email1|default:"info@fitnessfreaks.pk" }}';
+    const mailtoSubject = encodeURIComponent(subject || 'Contact Form Inquiry');
+    const mailtoBody = encodeURIComponent(
+        'Name: ' + name + '\n' +
+        'Email: ' + email + '\n' +
+        'Phone: ' + phone + '\n\n' +
+        'Message:\n' + message
+    );
+
+    window.location.href = 'mailto:' + mailtoEmail + '?subject=' + mailtoSubject + '&body=' + mailtoBody;
+}
+</script>
 {% endblock %}

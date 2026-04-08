@@ -6,9 +6,13 @@
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
             <a href="#home" class="flex items-center space-x-3 group">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-dumbbell text-black text-xl"></i>
-                </div>
+                {% if app.logo %}
+                    <img src="{{ app.logo.url }}" alt="Logo" class="w-12 h-12 rounded-xl object-contain transform group-hover:scale-110 transition-transform duration-300">
+                {% else %}
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-dumbbell text-black text-xl"></i>
+                    </div>
+                {% endif %}
                 <span class="font-heading font-bold text-2xl tracking-wider">FITNESS<span class="text-primary">FREAKS</span></span>
             </a>
             
