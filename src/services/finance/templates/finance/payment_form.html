@@ -13,10 +13,6 @@
         // Get plan prices from data attribute
         const planPrices = JSON.parse(subscriptionPlanSelect?.dataset.plans || '{}');
 
-        function getClosestRow(el) {
-            return el ? el.closest('.row') || el.closest('.form-row') || el.parentElement : null;
-        }
-
         function updateAmount() {
             const planId = subscriptionPlanSelect?.value;
             if (planId && planPrices[planId] && amountInput) {
@@ -28,16 +24,16 @@
             const payType = paymentTypeSelect?.value || 'regular';
             const payMethod = paymentMethodSelect?.value || 'cash';
 
-            // Registration fee visibility
+            // Registration fee visibility - target only the column
             if (regFeeInput) {
-                const regFeeRow = getClosestRow(regFeeInput);
+                const regFeeCol = regFeeInput.closest('.reg-fee-col') || regFeeInput.parentElement;
                 if (payType === 'registration' || payType === 'renewal') {
-                    if (regFeeRow) regFeeRow.style.display = '';
+                    if (regFeeCol) regFeeCol.style.display = '';
                     if (!regFeeInput.value || regFeeInput.value === '0.00' || regFeeInput.value === '0') {
                         regFeeInput.value = regFeeHelp || '0.00';
                     }
                 } else {
-                    if (regFeeRow) regFeeRow.style.display = 'none';
+                    if (regFeeCol) regFeeCol.style.display = 'none';
                     regFeeInput.value = '0.00';
                 }
             }
@@ -45,12 +41,12 @@
             // Reference number visibility (hide only for cash)
             const refNumberInput = document.getElementById('id_reference_number');
             if (refNumberInput) {
-                const refRow = getClosestRow(refNumberInput);
+                const refNumCol = refNumberInput.closest('.ref-num-col') || refNumberInput.parentElement;
                 if (payMethod === 'cash') {
-                    if (refRow) refRow.style.display = 'none';
+                    if (refNumCol) refNumCol.style.display = 'none';
                     refNumberInput.value = '';
                 } else {
-                    if (refRow) refRow.style.display = '';
+                    if (refNumCol) refNumCol.style.display = '';
                 }
             }
         }

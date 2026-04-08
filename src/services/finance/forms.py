@@ -233,21 +233,19 @@ class PaymentForm(forms.ModelForm):
             Div(
                 HTML('<h6 class="mb-3 text-primary"><i class="bx bx-user me-1"></i>Payment Details</h6>'),
                 Row(
-                    Column('member', css_class='form-group col-md-6 mb-0'),
-                    Column('subscription_plan', css_class='form-group col-md-6 mb-0'),
+                    Column('member', css_class='form-group col-md-4 mb-0'),
+                    Column('subscription_plan', css_class='form-group col-md-4 mb-0'),
+                    Column('payment_type', css_class='form-group col-md-4 mb-0'),
                 ),
                 Row(
-                    Column('payment_type', css_class='form-group col-md-4 mb-0'),
+
                     Column('amount', css_class='form-group col-md-4 mb-0'),
                     Column('discount', css_class='form-group col-md-4 mb-0'),
-                ),
-                # Registration fee on its own row so it can be toggled independently
-                Row(
-                    Column('registration_fee', css_class='form-group col-md-4 mb-0'),
+                    Column('registration_fee', css_class='form-group col-md-4 mb-0 reg-fee-col'),
                 ),
                 Row(
                     Column('payment_method', css_class='form-group col-md-4 mb-0'),
-                    Column('reference_number', css_class='form-group col-md-4 mb-0'),
+                    Column('reference_number', css_class='form-group col-md-4 mb-0 ref-num-col'),
                     Column('status', css_class='form-group col-md-4 mb-0'),
                 ),
                 HTML('<hr class="my-4">'),
