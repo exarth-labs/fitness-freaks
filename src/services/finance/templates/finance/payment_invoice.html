@@ -75,15 +75,17 @@
 
         /* Print button */
         .print-bar { text-align: center; padding: 16px; }
-        .print-bar button { background: var(--primary); color: #fff; border: none; padding: 10px 32px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .print-bar button:hover { background: #e69200; }
+        .btn-print { background: var(--primary); color: #fff; border: none; padding: 10px 32px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-print:hover { background: #e69200; }
+        .btn-back { background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 10px 32px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; margin-left: 8px; }
+        .btn-back:hover { background: var(--primary); color: #fff; }
     </style>
 </head>
 <body>
 
 <div class="no-print print-bar">
-    <button onclick="window.print()">🖨️ Print Invoice</button>
-    <button onclick="window.history.back()" style="margin-left:8px;background:#64748b;">← Back</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Print Invoice</button>
+    <button class="btn-back" onclick="window.history.back()">← Back</button>
 </div>
 
 <div class="invoice-page">
