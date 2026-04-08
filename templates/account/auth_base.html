@@ -20,9 +20,15 @@
 
                     <div class="user-form-logo d-flex justify-content-center">
                         <a href="{% url 'admins:dashboard' %}">
-                            <img alt="logo" src="{% static 'core/images/logos/logo-red.png' %}"
-                                 style="width: 30px; height: auto"
-                                 class="img-fluid m-5">
+                            {% if app.logo %}
+                                <img alt="logo" src="{{ app.logo.url }}"
+                                     style="width: 120px; height: auto"
+                                     class="img-fluid m-5">
+                            {% else %}
+                                <img alt="logo" src="{% static 'core/images/logos/logo-red.png' %}"
+                                     style="width: 120px; height: auto"
+                                     class="img-fluid m-5">
+                            {% endif %}
                         </a>
                     </div>
 

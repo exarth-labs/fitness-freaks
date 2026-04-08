@@ -14,8 +14,7 @@
         .invoice-header { padding: 40px 48px 32px; border-bottom: 2px solid #e2e8f0; }
         .invoice-header .top-row { display: flex; justify-content: space-between; align-items: flex-start; }
         .gym-brand { display: flex; align-items: center; gap: 16px; }
-        .gym-logo { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #3b82f6; }
-        .gym-logo img { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; }
+        .gym-logo { width: 64px; height: 64px; object-fit: contain; }
         .gym-name { font-size: 22px; font-weight: 700; color: #0f172a; }
         .gym-tagline { font-size: 13px; color: #64748b; margin-top: 2px; }
         .gym-contact { font-size: 12px; color: #64748b; margin-top: 4px; }
@@ -93,13 +92,11 @@
     <div class="invoice-header">
         <div class="top-row">
             <div class="gym-brand">
-                <div class="gym-logo">
-                    {% if application and application.logo %}
+                {% if application and application.logo %}
+                    <div class="gym-logo">
                         <img src="{{ application.logo.url }}" alt="Logo">
-                    {% else %}
-                        FF
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
                 <div>
                     <div class="gym-name">{{ application.name|default:"Fitness Freak Gym" }}</div>
                     <div class="gym-tagline">{{ application.tagline|default:"Your Fitness Partner" }}</div>
@@ -259,7 +256,7 @@
     <div class="invoice-footer">
         <div class="thanks">Thank you for choosing {{ application.name|default:"Fitness Freak" }}!</div>
         <div class="note">This is a computer-generated invoice. For queries, contact {{ application.contact_email1|default:"support@fitnessfreaks.com" }}</div>
-        <div class="powered">Powered by {{ application.short_name|default:"FF" }} &middot; Generated on {% now "F d, Y h:i A" %}</div>
+        <div class="powered">Powered by FitnessFreak &middot; Generated on {% now "F d, Y h:i A" %} &middot; built by exarth.com</div>
     </div>
 </div>
 
