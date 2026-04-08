@@ -210,23 +210,11 @@ class PaymentForm(forms.ModelForm):
         self.fields['registration_fee'].widget.attrs['id'] = 'id_registration_fee'
 
         # Add price data to subscription_plan options for JS auto-fill
-        plan_choices = []
-        for choice_value, choice_label in self.fields['subscription_plan'].choices:
-            if choice_value:
-                try:
-                    plan = SubscriptionPlan.objects.get(pk=choice_value)
-                    plan_choices.append((choice_value, choice_label, plan.price))
-                except (SubscriptionPlan.DoesNotExist, ValueError):
-                    plan_choices.append((choice_value, choice_label, 0))
-            else:
-                plan_choices.append((choice_value, choice_label, 0))
+        plan_prices = {}
+        for plan in SubscriptionPlan.objects.all():
+            plan_prices[str(plan.pk)] = str(plan.price)
 
-        self.fields['subscription_plan'].choices = [
-            (v, l) for v, l, _ in plan_choices
-        ]
-        self.fields['subscription_plan'].widget.attrs['data-plans'] = json.dumps(
-            {str(v): str(p) for v, _, p in plan_choices if v}
-        )
+        self.fields['subscription_plan'].widget.attrs['data-plans'] = json.dumps(plan_prices)
 
         # Set initial values from form's initial data or kwargs
         initial = kwargs.get('initial', {})
