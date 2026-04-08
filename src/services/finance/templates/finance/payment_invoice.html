@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice #{{ object.pk }} — {{ application.name|default:"Fitness Freak" }}</title>
     <style>
+        :root { --primary: #ffa200; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1e293b; background: #f8f9fa; }
         .invoice-page { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
@@ -14,13 +15,11 @@
         .invoice-header { padding: 40px 48px 32px; border-bottom: 2px solid #e2e8f0; }
         .invoice-header .top-row { display: flex; justify-content: space-between; align-items: flex-start; }
         .gym-brand { display: flex; align-items: center; gap: 16px; }
-        .gym-logo { width: 64px; height: 64px; object-fit: contain; }
+        .gym-logo { width: 100px; height: 100px; flex-shrink: 0; background: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .gym-logo img { max-width: 90%; max-height: 90%; display: block; object-fit: contain; }
         .gym-name { font-size: 22px; font-weight: 700; color: #0f172a; }
         .gym-tagline { font-size: 13px; color: #64748b; margin-top: 2px; }
         .gym-contact { font-size: 12px; color: #64748b; margin-top: 4px; }
-        .invoice-badge { text-align: right; }
-        .invoice-badge h2 { font-size: 26px; font-weight: 300; color: #3b82f6; text-transform: uppercase; letter-spacing: 2px; }
-        .invoice-badge .invoice-no { font-size: 14px; color: #64748b; margin-top: 4px; }
 
         /* Meta row */
         .invoice-meta { display: flex; justify-content: space-between; padding: 24px 48px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
@@ -53,7 +52,7 @@
         .totals-box .row .value { font-weight: 600; }
         .totals-box .row.grand { border-top: 2px solid #0f172a; padding-top: 12px; margin-top: 8px; font-size: 18px; }
         .totals-box .row.grand .label { color: #0f172a; font-weight: 700; }
-        .totals-box .row.grand .value { font-weight: 800; color: #3b82f6; }
+        .totals-box .row.grand .value { font-weight: 800; color: var(--primary); }
 
         /* Footer */
         .invoice-footer { padding: 24px 48px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; }
@@ -76,8 +75,8 @@
 
         /* Print button */
         .print-bar { text-align: center; padding: 16px; }
-        .print-bar button { background: #3b82f6; color: #fff; border: none; padding: 10px 32px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .print-bar button:hover { background: #2563eb; }
+        .print-bar button { background: var(--primary); color: #fff; border: none; padding: 10px 32px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .print-bar button:hover { background: #e69200; }
     </style>
 </head>
 <body>
@@ -108,15 +107,15 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="invoice-badge">
-                <h2>Invoice</h2>
-                <div class="invoice-no">#INV-{{ object.pk|stringformat:"04d" }}</div>
-            </div>
         </div>
     </div>
 
     <!-- Meta -->
     <div class="invoice-meta">
+        <div class="meta-block">
+            <h4>Invoice ID</h4>
+            <p class="text-primary">#INV-{{ object.pk|stringformat:"04d" }}</p>
+        </div>
         <div class="meta-block">
             <h4>Invoice Date</h4>
             <p>{{ object.payment_date|date:"F d, Y" }}</p>
