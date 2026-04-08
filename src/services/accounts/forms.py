@@ -181,7 +181,7 @@ class GroupForm(ModelForm):
 class InstructorForm(ModelForm):
     class Meta:
         model = Instructor
-        fields = ['user', 'specialization', 'hire_date', 'bio', 'is_active']
+        fields = ['user', 'specialization', 'hire_date', 'bio']
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 3}),
             'hire_date': forms.DateInput(attrs={'type': 'date'}),
@@ -193,12 +193,9 @@ class InstructorForm(ModelForm):
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
-                Column('user', css_class='form-group col-md-6 mb-0'),
-                Column('specialization', css_class='form-group col-md-6 mb-0'),
-            ),
-            Row(
+                Column('user', css_class='form-group col-md-4 mb-0'),
+                Column('specialization', css_class='form-group col-md-4 mb-0'),
                 Column('hire_date', css_class='form-group col-md-4 mb-0'),
-                Column('is_active', css_class='form-group col-md-4 mb-0'),
             ),
             'bio',
         )
