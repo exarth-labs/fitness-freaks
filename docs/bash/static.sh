@@ -16,7 +16,9 @@ cd "$PROJECT_ROOT"
 echo "📁 Working in: $PROJECT_ROOT"
 
 # Activate virtual environment
-if [ -d "venv" ]; then
+if [ -d ".venv" ]; then
+    source .venv/bin/activate
+elif [ -d "venv" ]; then
     source venv/bin/activate
 else
     echo "❌ Error: Virtual environment not found. Run setup.sh first."
