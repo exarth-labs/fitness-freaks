@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags static %}
+
+{% block subtitle %}Member Onboarding — Step {{ onboarding_step }} of 3{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="kt_app_main">
+    <div class="d-flex flex-column">
+
+        <!-- Header -->
+        <div class="mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="d-flex flex-column me-3">
+                    <h1 class="h3 fw-bold mb-0">New Member Onboarding</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 pt-1">
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'dashboard:dashboard' %}" class="text-muted text-decoration-none">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'finance:member_list' %}" class="text-muted text-decoration-none">Members</a>
+                            </li>
+                            <li class="breadcrumb-item text-muted">Onboarding</li>
+                        </ol>
+                    </nav>
+                </div>
+                <a href="{% url 'finance:member_list' %}" class="btn btn-outline-secondary">
+                    <i class="bx bx-x me-1"></i> Cancel
+                </a>
+            </div>
+        </div>
+
+        <!-- Progress Stepper -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body py-4">
+                <div class="d-flex align-items-center justify-content-center">
+
+                    {% for i in "123" %}
+                    {% with forloop.counter as n %}
+
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold
+                            {% if onboarding_step == n %}bg-primary text-white
+                            {% elif onboarding_step > n %}bg-success text-white
+                            {% else %}bg-light text-muted{% endif %}"
+                            style="width:44px;height:44px;font-size:1rem;">
+                            {% if onboarding_step > n %}
+                                <i class="bx bx-check fs-5"></i>
+                            {% else %}
+                                {{ n }}
+                            {% endif %}
+                        </div>
+                        <div class="mt-2 text-center" style="max-width:100px;">
+                            <div class="fw-semibold small
+                                {% if onboarding_step == n %}text-primary
+                                {% elif onboarding_step > n %}text-success
+                                {% else %}text-muted{% endif %}">
+                                {% if n == 1 %}Create User
+                                {% elif n == 2 %}Add Member
+                                {% else %}Add Payment{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if not forloop.last %}
+                    <div class="flex-grow-1 mx-3" style="max-width:100px;">
+                        <hr class="{% if onboarding_step > n %}border-success{% else %}border-secondary{% endif %}" style="border-width:2px;">
+                    </div>
+                    {% endif %}
+
+                    {% endwith %}
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+        {% if onboarding_step > 1 and wizard_user_data %}
+        <div class="alert alert-success d-flex align-items-center mb-3 py-2">
+            <i class="bx bx-check-circle me-2 fs-5"></i>
+            <span>
+                User <strong>{{ wizard_user_data.first_name }} {{ wizard_user_data.last_name }}</strong>
+                ({{ wizard_user_data.email }}) ready — complete the remaining steps to finish onboarding.
+            </span>
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light py-3">
+                <h5 class="mb-0 fw-semibold">
+                    <i class="bx {% if onboarding_step == 1 %}bx-user-plus{% elif onboarding_step == 2 %}bx-id-card{% else %}bx-credit-card{% endif %} me-2 text-primary"></i>
+                    Step {{ onboarding_step }} — {{ step_title }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" id="onboarding-form">
+                    {% csrf_token %}
+                    {{ wizard.management_form }}
+                    {% crispy wizard.form %}
+
+                    <div class="d-flex justify-content-between mt-4">
+                        {% if wizard.steps.prev %}
+                            <button name="wizard_goto_step" type="submit"
+                                    value="{{ wizard.steps.prev }}"
+                                    class="btn btn-outline-secondary fw-bold">
+                                <i class="bx bx-chevron-left me-1"></i> Back
+                            </button>
+                        {% else %}
+                            <span></span>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary fw-bold px-4">
+                            {% if wizard.steps.current == wizard.steps.last %}
+                                <i class="bx bx-check me-1"></i> Finish Onboarding
+                            {% else %}
+                                Next <i class="bx bx-chevron-right ms-1"></i>
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // CNIC auto-format — matches both wizard (name="0-cnic") and standalone (name="cnic")
+    const cnicInput = document.querySelector('input[name$="cnic"]');
+    if (cnicInput) {
+        cnicInput.addEventListener('input', function () {
+            let digits = this.value.replace(/\D/g, '');
+            if (digits.length > 13) digits = digits.slice(0, 13);
+            if (digits.length <= 5) this.value = digits;
+            else if (digits.length <= 12) this.value = digits.slice(0, 5) + '-' + digits.slice(5);
+            else this.value = digits.slice(0, 5) + '-' + digits.slice(5, 12) + '-' + digits.slice(12);
+        });
+    }
+
+    // Payment auto-fill (step 3)
+    // Wizard prefixes field names with step number e.g. "2-payment_type", so use name$= selectors
+    const paymentTypeSelect    = document.querySelector('select[name$="payment_type"]');
+    const paymentMethodSelect  = document.querySelector('select[name$="payment_method"]');
+    const subscriptionPlanSelect = document.querySelector('select[name$="subscription_plan"]');
+    const amountInput          = document.querySelector('input[name$="amount"]');
+    const regFeeInput          = document.querySelector('input[name$="registration_fee"]');
+    const refInput             = document.querySelector('input[name$="reference_number"]');
+    const regFeeHelp = "{{ registration_fee_help|default:'0.00' }}";
+
+    if (subscriptionPlanSelect) {
+        const planPrices = JSON.parse(subscriptionPlanSelect.dataset.plans || '{}');
+
+        function updateAmount() {
+            const planId = subscriptionPlanSelect.value;
+            if (planId && planPrices[planId] && amountInput) amountInput.value = planPrices[planId];
+        }
+
+        function toggleFields() {
+            const payType  = paymentTypeSelect?.value || 'regular';
+            const payMethod = paymentMethodSelect?.value || 'cash';
+
+            if (regFeeInput) {
+                const col = regFeeInput.closest('.reg-fee-col') || regFeeInput.parentElement;
+                if (payType === 'registration' || payType === 'renewal') {
+                    col.style.display = '';
+                    if (!regFeeInput.value || regFeeInput.value === '0.00' || regFeeInput.value === '0')
+                        regFeeInput.value = regFeeHelp;
+                } else {
+                    col.style.display = 'none';
+                    regFeeInput.value = '0.00';
+                }
+            }
+
+            if (refInput) {
+                const col = refInput.closest('.ref-num-col') || refInput.parentElement;
+                col.style.display = payMethod === 'cash' ? 'none' : '';
+                if (payMethod === 'cash') refInput.value = '';
+            }
+        }
+
+        subscriptionPlanSelect.addEventListener('change', () => { updateAmount(); toggleFields(); });
+        paymentTypeSelect?.addEventListener('change', toggleFields);
+        paymentMethodSelect?.addEventListener('change', toggleFields);
+        updateAmount();
+        toggleFields();
+    }
+});
+</script>
+{% endblock %}

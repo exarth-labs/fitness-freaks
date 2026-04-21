@@ -43,4 +43,5 @@ urlpatterns = [
     path('expenses/create/', ExpenseCreateView.as_view(), name='expense_create'),
     path('expenses/update/<int:pk>/', ExpenseUpdateView.as_view(), name='expense_update'),
     path('expenses/delete/<int:pk>/', ExpenseDeleteView.as_view(), name='expense_delete'),
+
 ]

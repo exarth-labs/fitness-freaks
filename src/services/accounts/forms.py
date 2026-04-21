@@ -82,6 +82,15 @@ class UserCreateForm(UserCreationForm):
             ),
         )
 
+    def clean_cnic(self):
+        value = self.cleaned_data.get('cnic', '')
+        if not value:
+            return value
+        digits = ''.join(filter(str.isdigit, value))
+        if len(digits) != 13:
+            raise forms.ValidationError('CNIC must be 13 digits (e.g. 12345-1234567-1)')
+        return f'{digits[:5]}-{digits[5:12]}-{digits[12]}'
+
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:

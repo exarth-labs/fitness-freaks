@@ -1,6 +1,9 @@
 {% extends 'include/object_list.html' %}
 {% load static %}
 {% block toolbar_actions %}
+    <a href="{% url 'onboarding:start' %}" class="btn fw-bold btn-success">
+        <i class="bx bx-user-check me-1"></i> Onboard Member
+    </a>
     <a href="{% url 'accounts:user_create' %}?next={{ request.path }}" class="btn fw-bold btn-outline-secondary">
         <i class="bx bx-user-plus me-1"></i> Create User
     </a>

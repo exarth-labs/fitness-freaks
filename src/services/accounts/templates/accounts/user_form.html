@@ -3,7 +3,7 @@
 {% block js-code %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const cnicInput = document.getElementById('id_cnic');
+            const cnicInput = document.querySelector('input[name$="cnic"]');
             if (cnicInput) {
                 cnicInput.addEventListener('input', function () {
                     let digits = this.value.replace(/\D/g, '');

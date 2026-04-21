@@ -26,6 +26,7 @@ urlpatterns += [
     path('dashboard/', include('src.services.dashboard.urls', namespace='dashboard')),
     path('accounts/', include('src.services.accounts.urls', namespace='accounts')),
     path('finance/', include('src.services.finance.urls', namespace='finance')),
+    path('onboarding/', include('src.services.onboarding.urls', namespace='onboarding')),
 ]
 
 """ ALL AUTH URLS ------------------------------------------------------------------------------------------------------- """
