@@ -138,7 +138,7 @@ class Member(models.Model):
 
     # Emergency contact
     emergency_contact_name = models.CharField(max_length=100, blank=True, null=True)
-    emergency_contact_phone = models.CharField(max_length=15, blank=True, null=True)
+    emergency_contact_phone = models.CharField(max_length=11, blank=True, null=True, help_text='Emergency contact phone number (11 digits) - optional')
 
     # Health Information
     blood_group = models.CharField(

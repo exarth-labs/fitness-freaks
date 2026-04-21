@@ -37,8 +37,8 @@ class User(AbstractUser):
         help_text='size of logo must be 250*250 and format must be png image file', crop=['middle', 'center']
     )
     phone_number = models.CharField(
-        max_length=14, blank=True, null=True,
-        validators=[phone_number_null_or_validator]
+        max_length=11, blank=True, null=True,
+        validators=[phone_number_null_or_validator], help_text='Phone number must be 11 digits (e.g. 03001234567) - optional'
     )
     gender = models.CharField(
         max_length=10, choices=GenderChoice.choices, blank=True, null=True,

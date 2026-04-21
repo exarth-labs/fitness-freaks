@@ -3,24 +3,22 @@
 {% block js-code %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const phoneInput = document.getElementById('id_phone_number');
-            phoneInput.addEventListener('input', function (e) {
-                let numbers = this.value.replace(/\D/g, ''); // Remove all non-digits
-                if (numbers.length > 10) numbers = numbers.slice(0, 10); // Only 10 digits allowed
-
-                let formatted = '';
-                if (numbers.length > 0) {
-                    formatted += '(' + numbers.substring(0, 3);
-                }
-                if (numbers.length >= 4) {
-                    formatted += ') ' + numbers.substring(3, 6);
-                }
-                if (numbers.length >= 7) {
-                    formatted += '-' + numbers.substring(6, 10);
-                }
-
-                this.value = formatted;
-            });
+            const cnicInput = document.getElementById('id_cnic');
+            if (cnicInput) {
+                cnicInput.addEventListener('input', function () {
+                    let digits = this.value.replace(/\D/g, '');
+                    if (digits.length > 13) digits = digits.slice(0, 13);
+                    let formatted = '';
+                    if (digits.length <= 5) {
+                        formatted = digits;
+                    } else if (digits.length <= 12) {
+                        formatted = digits.slice(0, 5) + '-' + digits.slice(5);
+                    } else {
+                        formatted = digits.slice(0, 5) + '-' + digits.slice(5, 12) + '-' + digits.slice(12);
+                    }
+                    this.value = formatted;
+                });
+            }
         });
     </script>
 {% endblock %}

@@ -1,2 +1,8 @@
 {% extends 'include/object_list.html' %}
+{% load static %}
+{% block toolbar_actions %}
+    <a href="{% url 'accounts:user_create' %}?next={{ request.path }}" class="btn fw-bold btn-outline-secondary">
+        <i class="bx bx-user-plus me-1"></i> Create User
+    </a>
+{% endblock %}
 
