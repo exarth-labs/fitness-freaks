@@ -113,7 +113,7 @@ else
 fi
 
 # Run Makemigrations, Migrate and Collectstatic
-sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py makemigrations"
+sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py makemigrations accounts core finance whisper"
 sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py migrate"
 sudo -u "$SYSTEM_USER" bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py collectstatic --noinput"
 

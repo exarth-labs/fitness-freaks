@@ -43,7 +43,7 @@ $EXEC_AS bash -c "cd $PROJECT_DIR && source venv/bin/activate && pip install -r 
 echo "========================================="
 echo "3. Running Migrations & CollectStatic"
 echo "========================================="
-$EXEC_AS bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py makemigrations"
+$EXEC_AS bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py makemigrations accounts core finance whisper"
 $EXEC_AS bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py migrate"
 $EXEC_AS bash -c "cd $PROJECT_DIR && source venv/bin/activate && python manage.py collectstatic --noinput"
 
