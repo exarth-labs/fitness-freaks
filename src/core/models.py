@@ -8,16 +8,16 @@ from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 
 def phone_number_validator(value):
-    pattern = r'^\(\d{3}\) \d{3}-\d{4}$'
-    if not re.match(pattern, value):
-        raise ValidationError('Phone number must be in the format (xxx) xxx-xxxx')
+    digits = re.sub(r'\D', '', value)
+    if len(digits) != 11:
+        raise ValidationError('Phone number must be 11 digits (e.g. 03001234567)')
 
 def phone_number_null_or_validator(value):
     if value is None or value == '':
         return
-    pattern = r'^\(\d{3}\) \d{3}-\d{4}$'
-    if not re.match(pattern, value):
-        raise ValidationError('Phone number must be in the format (xxx) xxx-xxxx')
+    digits = re.sub(r'\D', '', value)
+    if len(digits) != 11:
+        raise ValidationError('Phone number must be 11 digits (e.g. 03001234567)')
 
 def validate_us_zip_code(value):
     """

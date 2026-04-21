@@ -32,7 +32,8 @@
                             </ol>
                         </nav>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        {% block toolbar_actions %}{% endblock %}
                         {% with model_class|create_action_url_for:request.user as create_url %}
                             {% if create_url %}
                                 <a href="{% url create_url %}" class="btn fw-bold btn-primary">

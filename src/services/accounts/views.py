@@ -92,6 +92,9 @@ class UserCreateView(StaffMixin, CustomPermissionMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, "User created successfully.")
+        next_url = self.request.GET.get('next') or self.request.POST.get('next')
+        if next_url and next_url.startswith('/'):
+            return next_url
         return reverse_lazy('accounts:user_detail', kwargs={'pk': self.object.pk})
 
 

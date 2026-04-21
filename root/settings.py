@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     # STARTER APPS
+    'formtools',
     'crispy_forms',
     'crispy_bootstrap5',
     'django_filters',
@@ -66,6 +67,7 @@ INSTALLED_APPS = [
     'src.services.accounts.apps.AccountsConfig',
     'src.services.dashboard.apps.DashboardConfig',
     'src.services.finance.apps.FinanceConfig',
+    'src.services.onboarding.apps.OnboardingConfig',
     'src.services.website.apps.WebsiteConfig',
 
     # mailchimp
